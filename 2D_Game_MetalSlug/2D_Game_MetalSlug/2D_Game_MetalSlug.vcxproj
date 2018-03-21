@@ -148,25 +148,29 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="2D_Game_MetalSlug.h" />
+    <ClInclude Include="DEFAULTGUN.h" />
+    <ClInclude Include="GAMEMANAGER.h" />
+    <ClInclude Include="GUN.h" />
+    <ClInclude Include="keyManager.h" />
+    <ClInclude Include="PLAYER.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="singletonBase.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="2D_Game_MetalSlug.cpp" />
+    <ClCompile Include="DEFAULTGUN.cpp" />
+    <ClCompile Include="GAMEMANAGER.cpp" />
+    <ClCompile Include="GUN.cpp" />
+    <ClCompile Include="keyManager.cpp" />
+    <ClCompile Include="PLAYER.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="2D_Game_MetalSlug.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="2D_Game_MetalSlug.ico" />
-    <Image Include="small.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

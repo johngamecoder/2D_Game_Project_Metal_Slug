@@ -13,19 +13,55 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="FrameWork">
+      <UniqueIdentifier>{7536bbd7-7b12-4685-84d2-6e695ef26d3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameWork\KeyManager">
+      <UniqueIdentifier>{ebc44fe1-eaf3-4acf-af75-515d6e78960e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameWork\GameManager">
+      <UniqueIdentifier>{2a32b059-df5d-4fb9-9ea2-5ab967578b2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\_Header">
+      <UniqueIdentifier>{481c1032-6521-4e84-97d6-a59d1436686b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameWork\Player">
+      <UniqueIdentifier>{0c19316b-9f66-4117-9195-9de49039123f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameWork\Player\Gun">
+      <UniqueIdentifier>{24cffb61-2fee-441c-9075-e0986799f58f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="2D_Game_MetalSlug.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="keyManager.h">
+      <Filter>FrameWork\KeyManager</Filter>
+    </ClInclude>
+    <ClInclude Include="GAMEMANAGER.h">
+      <Filter>FrameWork\GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="singletonBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files\_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files\_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="PLAYER.h">
+      <Filter>FrameWork\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="GUN.h">
+      <Filter>FrameWork\Player\Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="DEFAULTGUN.h">
+      <Filter>FrameWork\Player\Gun</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -35,18 +71,20 @@
     <ClCompile Include="2D_Game_MetalSlug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="2D_Game_MetalSlug.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="small.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="2D_Game_MetalSlug.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
+    <ClCompile Include="keyManager.cpp">
+      <Filter>FrameWork\KeyManager</Filter>
+    </ClCompile>
+    <ClCompile Include="GAMEMANAGER.cpp">
+      <Filter>FrameWork\GameManager</Filter>
+    </ClCompile>
+    <ClCompile Include="PLAYER.cpp">
+      <Filter>FrameWork\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="GUN.cpp">
+      <Filter>FrameWork\Player\Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="DEFAULTGUN.cpp">
+      <Filter>FrameWork\Player\Gun</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
