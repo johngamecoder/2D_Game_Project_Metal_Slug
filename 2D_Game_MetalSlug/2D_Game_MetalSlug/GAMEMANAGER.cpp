@@ -4,6 +4,10 @@
 
 GAMEMANAGER::GAMEMANAGER()
 {
+	bulletBoarder.left = 0;
+	bulletBoarder.top = 0;
+	bulletBoarder.right = WINSIZEX;
+	bulletBoarder.bottom = WINSIZEY;
 }
 
 
@@ -15,66 +19,94 @@ void GAMEMANAGER::Init()
 {
 	keyManager::getSingleton()->init();
 	player.Init();
-	gun = new DEFAULTGUN;
 }
 
 void GAMEMANAGER::Update()
 {
+	//전역으로 놓아둔 hWnd, extern을 사용하는것 매우 중요!
+	InvalidateRect(hWnd, 0, true);
+
 	//key입력을 받는 부분
 	if (keyManager::getSingleton()->isStayKeyDown(VK_LEFT))
 	{
 		player.pos.left -= player.moveSpeed;
 		player.pos.right-= player.moveSpeed;
+
+		//이건 총이 anymachinegun 으로 바뀌면 다시 생각해야 할 부분
+		player.gunPoints.prevAngle = PI+0.01f;	//+0.01f는 미세 조정을 위하여
 	}
 	if (keyManager::getSingleton()->isStayKeyDown(VK_RIGHT))
 	{
 		player.pos.left += player.moveSpeed;
 		player.pos.right += player.moveSpeed;
+		//이건 총이 anymachinegun 으로 바뀌면 다시 생각해야 할 부분
+		player.gunPoints.prevAngle = 0;
 	}
-	if (keyManager::getSingleton()->isOnceKeyDown(VK_SPACE) && !player.isJump)/*isStayKeyDown(VK_RIGHT)*/
+	if (keyManager::getSingleton()->isStayKeyDown(VK_UP))
+	{
+		player.gunPoints.isUpKeyPressed = true;
+		//이건 총이 anymachinegun 으로 바뀌면 다시 생각해야 할 부분
+		
+	}
+	if (keyManager::getSingleton()->isStayKeyDown(VK_DOWN))
+	{
+		player.gunPoints.isDownKeyPressed = true;
+		//이건 총이 anymachinegun 으로 바뀌면 다시 생각해야 할 부분
+		
+	}
+	if (keyManager::getSingleton()->isOnceKeyDown(0x57/*'W for jump'*/) && !player.isJump)/*isStayKeyDown(VK_RIGHT)*/
 	{
 		player.isJump = true;
 		player.jumpPower = -(JUMPPOWER);
 	}
-	
+	if (keyManager::getSingleton()->isOnceKeyDown(0x51/*'Q for shoot'*/))
+	{
+		player.gun->BulletFire(player.gunPoints.endX,player.gunPoints.endY, player.gunPoints.angle);
+	}	 //0x45 /*'E for shoot'*/
+	player.gun->BulletMove();
+
 	//player Jump 부분
-	if (player.isJump)
-		player.Jump();
-	else
-		if (player.pos.bottom < 350) //이거 잠깐 temp로 쓰자
-			player.Gravity();
+	playerJump();
+
+	//player gun line 
+	changeGunPos();
+
+	//총이 frame 밖으로 나가면 reset되도록
+	for (int i = 0; i < BULLETMAX; i++)
+	{
+		if (!IntersectRect(&tempRect, &bulletBoarder, &player.gun->getBulletPos(i)))
+			player.gun->setFired(i, false);
+	}
 	
 
 
-	//if (KEYMANAGER->isOnceKeyDown(VK_SPACE))
-	//{
-	//	bulletFire();
-	//}
-	/*bulletMove();
-	collision();
-	_cannon.cannonEnd.x = cosf(_cannon.angle) * _cannon.cannon + _cannon.center.x;
-	_cannon.cannonEnd.y = -sinf(_cannon.angle) * _cannon.cannon + _cannon.center.y;*/
-
-	//전역으로 놓아둔 hWnd, extern을 사용하는것 매우 중요!
-	InvalidateRect(hWnd, 0, true);
 }
 
 void GAMEMANAGER::Render(HDC hdc)
 {
 	//Paint player
-	Rectangle(hdc, player.GetPos().left, player.GetPos().top, player.GetPos().right, player.GetPos().bottom);
+	Rectangle(hdc, player.pos.left, player.pos.top, player.pos.right, player.pos.bottom);
 
 	//paint Gun
+	MoveToEx(hdc, player.gunPoints.startX, player.gunPoints.startY, NULL);	//먼저 hdc를 옴기고 
+	LineTo(hdc, player.gunPoints.endX, player.gunPoints.endY);	//선을 그린다.
+
+	//paint bullet
+	for (int i = 0; i < BULLETMAX; i++)
+	{
+		if (!player.gun->checkFired(i))
+			continue;
+		RECT tempRect = player.gun->getBulletPos(i);
+		Rectangle(hdc, tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
+	}
 	
-	//MoveToEx(hdc, tempGP.startX, tempGP.startY, NULL);	//먼저 hdc를 옴기고 
-	//LineTo(hdc, tempGP.endX, tempGP.endY);	//선을 그린다.
 }
 
 
 void GAMEMANAGER::Release()
 {
 	keyManager::getSingleton()->release();
-	delete(gun);
+	delete(player.gun);
 }
 
 LRESULT GAMEMANAGER::GameProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
@@ -93,7 +125,6 @@ LRESULT GAMEMANAGER::GameProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lP
 		break;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
-		
 		this->Render(hdc);
 		EndPaint(hWnd, &ps);
 		break;
@@ -115,4 +146,41 @@ LRESULT GAMEMANAGER::GameProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lP
 		return DefWindowProc(hWnd, iMessage, wParam, lParam);
 	}
 	return 0;
+}
+
+void GAMEMANAGER::playerJump()
+{
+	if (player.isJump)
+		player.Jump();
+	else
+		if (player.pos.bottom < 350) //이거 잠깐 temp로 쓰자
+			player.Gravity();
+}
+
+void GAMEMANAGER::changeGunPos()
+{
+	player.gunPoints.startX = player.pos.left + (PLAYER_SIZE / 2);
+	player.gunPoints.startY = player.pos.top + (PLAYER_SIZE / 2);
+	
+
+	//gun의 end point가 angle에 따라 달라지게 만듬
+	if (player.gunPoints.isUpKeyPressed || player.gunPoints.isDownKeyPressed)
+	{
+		if (player.gunPoints.isUpKeyPressed)
+		{
+			player.gunPoints.angle = PI / 2;
+			player.gunPoints.isUpKeyPressed = false;
+		}
+		else 
+		{
+			player.gunPoints.angle = PI + (PI / 2)+0.01f;
+			player.gunPoints.isDownKeyPressed = false;
+		}
+	}
+	else
+		player.gunPoints.angle = player.gunPoints.prevAngle;
+		
+		
+	player.gunPoints.endX = cosf(player.gunPoints.angle)*PLAYER_SIZE + player.gunPoints.startX;
+	player.gunPoints.endY = -(sinf(player.gunPoints.angle)*PLAYER_SIZE) + player.gunPoints.startY;
 }

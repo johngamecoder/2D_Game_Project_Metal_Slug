@@ -14,11 +14,12 @@ DEFAULTGUN::~DEFAULTGUN()
 
 void DEFAULTGUN::Init()
 {
-	
 	for (int i = 0; i < BULLETMAX; i++)
 	{
-		bullet->isFired = false;
-		bullet->speed = DEFAULTGUNSPEED;
-		bullet->angle = 0;
+		bullet[i].isFired = false;
+		bullet[i].speed = DEFAULTGUNSPEED;
+		bullet[i].angle = 0;
 	}
 }
+
+

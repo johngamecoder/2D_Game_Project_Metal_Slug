@@ -1,7 +1,7 @@
 #pragma once
 #include "GUN.h"
 
-#define DEFAULTGUNSPEED 5
+#define DEFAULTGUNSPEED 15
 
 class DEFAULTGUN : public GUN
 {
@@ -10,6 +10,5 @@ public:
 	~DEFAULTGUN();
 
 	virtual void Init();
-
 };
 

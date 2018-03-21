@@ -5,7 +5,8 @@ class GAMEMANAGER
 {
 private:
 	PLAYER player;
-	GUN* gun;
+	RECT bulletBoarder;
+	RECT tempRect;
 public:
 	GAMEMANAGER();
 	~GAMEMANAGER();
@@ -16,5 +17,9 @@ public:
 	void Release();
 
 	LRESULT GameProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam);
+	
+	void playerJump();
+	void changeGunPos();
+	
 };
 

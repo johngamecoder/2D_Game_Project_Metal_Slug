@@ -1,7 +1,7 @@
 #pragma once
 
-#define BULLETMAX 10
-
+#define BULLETMAX 5
+#define BULLET_SIZE 5
 
 //ÃÑ¾Ë ±¸Á¶Ã¼
 struct tagBULLET
@@ -13,17 +13,23 @@ struct tagBULLET
 };
 
 
-
+class PLAYER;
 class GUN
 {
 protected:
 	tagBULLET bullet[BULLETMAX];
+
 public:
 	GUN();
 	virtual ~GUN();
 	
 
 	virtual void Init();
-	virtual void Fire();
+	void BulletFire(int,int,float);	//fire
+	void BulletMove();	//update
+
+	RECT getBulletPos(int n);
+	bool checkFired(int n);
+	void setFired(int, bool);
 };
 

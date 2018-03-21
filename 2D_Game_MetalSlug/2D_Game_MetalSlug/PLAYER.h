@@ -1,55 +1,45 @@
 #pragma once
 
 #define JUMPPOWER 3.5f
+#define PLAYER_MOVE_SPEED 3
+
 struct tagGunPoints
 {
 	int startX, startY;
 	int endX, endY;
 	float angle;
-};
+	float prevAngle;
+	bool isUpKeyPressed;
+	bool isDownKeyPressed;
 
+	void operator =(const tagGunPoints& pos)
+	{
+		startX = pos.startX;
+		startY = pos.startY;
+		endX = pos.endX;
+		endY = pos.endY;
+		angle = pos.angle;
+	}
+};
+class GUN;
 class PLAYER
 {
-private:
-	tagGunPoints gunPoints;
-	float gravity;
-	 //x변수
-	 //상수a
 public:
+	RECT pos;	//player 위치
+	GUN* gun;	//총 instence pointer
 	int moveSpeed;
 	bool isJump;
 	float jumpPower;
 
-	RECT pos;
+	tagGunPoints gunPoints;
+
+
 public:
 	PLAYER();
 	~PLAYER();
-	RECT GetPos()
-	{
-		return pos;
-	}
-	void SetPos(int _left,int _top,int _right,int _bottom)
-	{
-		pos.left = _left;
-		pos.top = _top;
-		pos.right = _right;
-		pos.bottom = _bottom;
-	}
+	
 	void Init();
 	void Jump();
 	void Gravity();
-	
-	void setGunPoints()
-	{
-		gunPoints.startX = pos.right - pos.left ;
-		gunPoints.startY = pos.bottom - pos.top;
-		gunPoints.endX= gunPoints.startX+20;
-		gunPoints.endY= pos.bottom - pos.top;
-		gunPoints.angle = 0;
-	}
-	tagGunPoints getGunPoints()
-	{
-		return gunPoints;
-	}
 };
 

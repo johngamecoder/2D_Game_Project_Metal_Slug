@@ -11,14 +11,29 @@ PLAYER::~PLAYER()
 {
 }
 
+
+
 void PLAYER::Init()
 {
-	gravity = 3.0f;
-	isJump = false;
-	
-	SetPos(200, 300, 250, 350);
-	moveSpeed = 3;
+	//player에 관한 setting
+	pos.left = PLAYER_POSITION_X;
+	pos.top = PLAYER_POSITION_Y;
+	pos.right = PLAYER_POSITION_X + PLAYER_SIZE;
+	pos.bottom = PLAYER_POSITION_Y + PLAYER_SIZE;
+	moveSpeed = PLAYER_MOVE_SPEED;
 
+	//player jump 관련 세팅
+	isJump = false;
+
+	//player 총에 관한 setting
+	gun = new DEFAULTGUN;
+	gun->Init();
+
+	//gun point 관련 세팅
+	gunPoints.angle = 0;
+	gunPoints.prevAngle = gunPoints.angle;
+	gunPoints.isUpKeyPressed = false;
+	gunPoints.isDownKeyPressed = false;
 }
 
 void PLAYER::Jump()		//- 2차 함수를 사용해서 위로 언덕 방식의 점프를 구현했다.
@@ -40,6 +55,6 @@ void PLAYER::Jump()		//- 2차 함수를 사용해서 위로 언덕 방식의 점프를 구현했다.
 
 void PLAYER::Gravity()
 {
-	pos.top += gravity;
-	pos.bottom += gravity;
+	pos.top += GRAVITY;
+	pos.bottom += GRAVITY;
 }
