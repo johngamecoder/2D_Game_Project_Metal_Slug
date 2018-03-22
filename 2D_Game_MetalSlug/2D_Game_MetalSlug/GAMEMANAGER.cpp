@@ -19,6 +19,7 @@ void GAMEMANAGER::Init()
 {
 	keyManager::getSingleton()->init();
 	player.Init();
+	GnO.Init();
 }
 
 void GAMEMANAGER::Update()
@@ -65,7 +66,7 @@ void GAMEMANAGER::Update()
 	}	 //0x45 /*'E for shoot'*/
 	player.gun->BulletMove();
 
-	//player Jump 부분
+	//player Jump & gravity(falling) 부분
 	playerJump();
 
 	//player gun line 
@@ -78,7 +79,7 @@ void GAMEMANAGER::Update()
 			player.gun->setFired(i, false);
 	}
 	
-
+	
 
 }
 
@@ -96,7 +97,7 @@ void GAMEMANAGER::Render(HDC hdc)
 	{
 		if (!player.gun->checkFired(i))
 			continue;
-		RECT tempRect = player.gun->getBulletPos(i);
+		tempRect = player.gun->getBulletPos(i);
 		Rectangle(hdc, tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
 	}
 	
@@ -150,11 +151,18 @@ LRESULT GAMEMANAGER::GameProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lP
 
 void GAMEMANAGER::playerJump()
 {
+	//printf("player.pos.bottom : %d\n", player.pos.bottom);
 	if (player.isJump)
+	{
 		player.Jump();
-	else
-		if (player.pos.bottom < 350) //이거 잠깐 temp로 쓰자
-			player.Gravity();
+		
+		//printf("player.pos.bottom : %d\n", player.pos.bottom);
+	}
+	else if(!IntersectRect(&tempRect,&player.pos,&GnO.getFloorPos()))
+	{
+		player.Gravity();
+	}
+		
 }
 
 void GAMEMANAGER::changeGunPos()
@@ -173,7 +181,7 @@ void GAMEMANAGER::changeGunPos()
 		}
 		else 
 		{
-			player.gunPoints.angle = PI + (PI / 2)+0.01f;
+			player.gunPoints.angle = PI + (PI / 2)+0.01f;	//미세조정 0.01f
 			player.gunPoints.isDownKeyPressed = false;
 		}
 	}

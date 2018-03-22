@@ -1,12 +1,14 @@
 #pragma once
 class PLAYER;	//class player가 있으니 나중에 찾으라고 미리 선언
 class GUN;
+class GROUNDnOBSTACLE;
 class GAMEMANAGER
 {
 private:
 	PLAYER player;
-	RECT bulletBoarder;
-	RECT tempRect;
+	GROUNDnOBSTACLE GnO;	
+	RECT bulletBoarder;	//총이 이 RECT를 넘어가면 초기화하게 된다.
+	RECT tempRect;		//intersectRect 를 사용하기 위해 만들어 놓은 various usage temporary Rect
 public:
 	GAMEMANAGER();
 	~GAMEMANAGER();

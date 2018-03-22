@@ -31,12 +31,18 @@
     <Filter Include="FrameWork\Player\Gun">
       <UniqueIdentifier>{24cffb61-2fee-441c-9075-e0986799f58f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FrameWork\BackGround">
+      <UniqueIdentifier>{f9af97b7-e9f4-4755-a2ac-1feafb23d1b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameWork\Utility">
+      <UniqueIdentifier>{4d2c633c-0bb8-411f-9a82-44ff5c09f664}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameWork\Enemy">
+      <UniqueIdentifier>{4b089028-130b-44ea-a2d0-681ef4c9b85c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="2D_Game_MetalSlug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="keyManager.h">
@@ -44,9 +50,6 @@
     </ClInclude>
     <ClInclude Include="GAMEMANAGER.h">
       <Filter>FrameWork\GameManager</Filter>
-    </ClInclude>
-    <ClInclude Include="singletonBase.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>Header Files\_Header</Filter>
@@ -63,12 +66,24 @@
     <ClInclude Include="DEFAULTGUN.h">
       <Filter>FrameWork\Player\Gun</Filter>
     </ClInclude>
+    <ClInclude Include="singletonBase.h">
+      <Filter>FrameWork\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="GROUNDnOBSTACLE.h">
+      <Filter>FrameWork\BackGround</Filter>
+    </ClInclude>
+    <ClInclude Include="ENEMY.h">
+      <Filter>FrameWork\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="2D_Game_MetalSlug.h">
+      <Filter>FrameWork</Filter>
+    </ClInclude>
+    <ClInclude Include="SOLDIER.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="2D_Game_MetalSlug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="keyManager.cpp">
@@ -85,6 +100,18 @@
     </ClCompile>
     <ClCompile Include="DEFAULTGUN.cpp">
       <Filter>FrameWork\Player\Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="GROUNDnOBSTACLE.cpp">
+      <Filter>FrameWork\BackGround</Filter>
+    </ClCompile>
+    <ClCompile Include="ENEMY.cpp">
+      <Filter>FrameWork\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="2D_Game_MetalSlug.cpp">
+      <Filter>FrameWork</Filter>
+    </ClCompile>
+    <ClCompile Include="SOLDIER.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
