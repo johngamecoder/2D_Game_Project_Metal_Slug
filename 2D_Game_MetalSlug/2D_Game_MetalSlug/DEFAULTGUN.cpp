@@ -14,6 +14,7 @@ DEFAULTGUN::~DEFAULTGUN()
 
 void DEFAULTGUN::Init()
 {
+	bulletNum = BULLETMAX;
 	for (int i = 0; i < BULLETMAX; i++)
 	{
 		bullet[i].isFired = false;

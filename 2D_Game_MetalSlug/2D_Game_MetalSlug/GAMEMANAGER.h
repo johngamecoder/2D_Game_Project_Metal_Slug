@@ -1,14 +1,31 @@
 #pragma once
+#include "Image.h"
+
 class PLAYER;	//class player가 있으니 나중에 찾으라고 미리 선언
 class GUN;
 class GROUNDnOBSTACLE;
+class ENEMY;
+
+
+
 class GAMEMANAGER
 {
 private:
 	PLAYER player;
 	GROUNDnOBSTACLE GnO;	
-	RECT bulletBoarder;	//총이 이 RECT를 넘어가면 초기화하게 된다.
+	
+	
+	//Enemy
+	ENEMY* enemy;
 	RECT tempRect;		//intersectRect 를 사용하기 위해 만들어 놓은 various usage temporary Rect
+	
+private:
+	tagKEYBOARD keyBoard;
+	POINT mousePoint;
+
+	Image * m_backbuffer; //백버퍼
+	void setBackBuffer(); //백버퍼 세팅 함수
+
 public:
 	GAMEMANAGER();
 	~GAMEMANAGER();
@@ -20,8 +37,8 @@ public:
 
 	LRESULT GameProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam);
 	
-	void playerJump();
-	void changeGunPos();
+	//백버퍼 얻어오기
+	Image* getBackBuffer() { return m_backbuffer; }
 	
 };
 

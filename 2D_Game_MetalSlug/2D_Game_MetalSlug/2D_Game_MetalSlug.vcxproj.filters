@@ -40,6 +40,9 @@
     <Filter Include="FrameWork\Enemy">
       <UniqueIdentifier>{4b089028-130b-44ea-a2d0-681ef4c9b85c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FrameWork\Image">
+      <UniqueIdentifier>{336637b6-60e9-486f-8b6f-29f6002c6e7c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -79,7 +82,10 @@
       <Filter>FrameWork</Filter>
     </ClInclude>
     <ClInclude Include="SOLDIER.h">
-      <Filter>Header Files</Filter>
+      <Filter>FrameWork\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>FrameWork\Image</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -111,7 +117,10 @@
       <Filter>FrameWork</Filter>
     </ClCompile>
     <ClCompile Include="SOLDIER.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>FrameWork\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>FrameWork\Image</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

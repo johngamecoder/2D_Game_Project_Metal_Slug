@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "ENEMY.h"
 
 
 ENEMY::ENEMY()
@@ -15,7 +14,7 @@ void ENEMY::Init()
 {
 }
 
-void ENEMY::Update()
+void ENEMY::Update(RECT, tagBULLET*,int)
 {
 }
 
@@ -33,4 +32,9 @@ void ENEMY::Move()
 
 void ENEMY::Dead()
 {
+}
+
+void ENEMY::Render(HDC)
+{
+
 }

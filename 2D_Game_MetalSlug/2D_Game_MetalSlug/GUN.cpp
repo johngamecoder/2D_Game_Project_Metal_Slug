@@ -47,11 +47,6 @@ void GUN::BulletMove()
 	}
 }
 
-RECT GUN::getBulletPos(int n)
-{
-	return bullet[n].pos;
-}
-
 bool GUN::checkFired(int n)
 {
 	return bullet[n].isFired;
@@ -60,5 +55,6 @@ bool GUN::checkFired(int n)
 void GUN::setFired(int n, bool b)
 {
 	bullet[n].isFired = b;
+	bullet[n].pos = { 0,0,0,0 };	//위치를 초기화 해주어서, 나중에 다른 것들과 부닥처서 error 가 나는 것을 방지
 }
 

@@ -3,14 +3,7 @@
 #define BULLETMAX 5
 #define BULLET_SIZE 5
 
-//ÃÑ¾Ë ±¸Á¶Ã¼
-struct tagBULLET
-{
-	bool isFired;
-	RECT pos;
-	float speed;
-	float angle;
-};
+
 
 
 class PLAYER;
@@ -18,7 +11,7 @@ class GUN
 {
 protected:
 	tagBULLET bullet[BULLETMAX];
-
+	int bulletNum;
 public:
 	GUN();
 	virtual ~GUN();
@@ -28,7 +21,18 @@ public:
 	void BulletFire(int,int,float);	//fire
 	void BulletMove();	//update
 
-	RECT getBulletPos(int n);
+	RECT getBulletPos(int n)
+	{
+		return bullet[n].pos;
+	}
+	tagBULLET* getBulletPointer()
+	{
+		return bullet;
+	}
+	int getBulletNum()
+	{
+		return bulletNum;
+	}
 	bool checkFired(int n);
 	void setFired(int, bool);
 };

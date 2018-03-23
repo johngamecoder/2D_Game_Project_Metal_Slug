@@ -2,12 +2,14 @@
 //#include "GAMEMANAGER.h"
 //#include "PLAYER.h"
 
+void GAMEMANAGER::setBackBuffer()
+{
+	m_backbuffer = new Image;
+	m_backbuffer->init(WINSIZEX, WINSIZEY);
+}
+
 GAMEMANAGER::GAMEMANAGER()
 {
-	bulletBoarder.left = 0;
-	bulletBoarder.top = 0;
-	bulletBoarder.right = WINSIZEX;
-	bulletBoarder.bottom = WINSIZEY;
 }
 
 
@@ -18,79 +20,71 @@ GAMEMANAGER::~GAMEMANAGER()
 void GAMEMANAGER::Init()
 {
 	keyManager::getSingleton()->init();
+	keyBoard = { 0, };
+	setBackBuffer();
+
+	mousePoint = { 0,0 };
+
 	player.Init();
 	GnO.Init();
+
+
+	enemy = new SOLDIER;
+	enemy->Init();
+	
 }
 
 void GAMEMANAGER::Update()
 {
 	//전역으로 놓아둔 hWnd, extern을 사용하는것 매우 중요!
 	InvalidateRect(hWnd, 0, true);
+	player.setFloorPos(GnO.getFloorPos());
 
 	//key입력을 받는 부분
 	if (keyManager::getSingleton()->isStayKeyDown(VK_LEFT))
-	{
-		player.pos.left -= player.moveSpeed;
-		player.pos.right-= player.moveSpeed;
-
-		//이건 총이 anymachinegun 으로 바뀌면 다시 생각해야 할 부분
-		player.gunPoints.prevAngle = PI+0.01f;	//+0.01f는 미세 조정을 위하여
-	}
+		keyBoard.leftKeyPressed = true;
 	if (keyManager::getSingleton()->isStayKeyDown(VK_RIGHT))
-	{
-		player.pos.left += player.moveSpeed;
-		player.pos.right += player.moveSpeed;
-		//이건 총이 anymachinegun 으로 바뀌면 다시 생각해야 할 부분
-		player.gunPoints.prevAngle = 0;
-	}
+		keyBoard.rightKeyPressed = true;
 	if (keyManager::getSingleton()->isStayKeyDown(VK_UP))
-	{
-		player.gunPoints.isUpKeyPressed = true;
-		//이건 총이 anymachinegun 으로 바뀌면 다시 생각해야 할 부분
-		
-	}
+		keyBoard.upKeyPressed = true;
 	if (keyManager::getSingleton()->isStayKeyDown(VK_DOWN))
-	{
-		player.gunPoints.isDownKeyPressed = true;
-		//이건 총이 anymachinegun 으로 바뀌면 다시 생각해야 할 부분
-		
-	}
+		keyBoard.downKeyPressed = true;									//이부분을 어떻게 할까... 고민1. 우선 점프를 하면 다시 땅에 돌아올때 까지 점프를 못하게 해야 함, 고민2 점프 후에 돌 위로 떨어지면 그에 맞게 또 돌 위에 올라서게 되야 함! Case 2개
 	if (keyManager::getSingleton()->isOnceKeyDown(0x57/*'W for jump'*/) && !player.isJump)/*isStayKeyDown(VK_RIGHT)*/
-	{
-		player.isJump = true;
-		player.jumpPower = -(JUMPPOWER);
-	}
+		keyBoard.W_KeyPressed = true;
 	if (keyManager::getSingleton()->isOnceKeyDown(0x51/*'Q for shoot'*/))
-	{
-		player.gun->BulletFire(player.gunPoints.endX,player.gunPoints.endY, player.gunPoints.angle);
-	}	 //0x45 /*'E for shoot'*/
-	player.gun->BulletMove();
-
-	//player Jump & gravity(falling) 부분
-	playerJump();
-
-	//player gun line 
-	changeGunPos();
-
-	//총이 frame 밖으로 나가면 reset되도록
-	for (int i = 0; i < BULLETMAX; i++)
-	{
-		if (!IntersectRect(&tempRect, &bulletBoarder, &player.gun->getBulletPos(i)))
-			player.gun->setFired(i, false);
-	}
+		keyBoard.Q_KeyPressed = true;
 	
+	//0x45 /*'E for shoot'*/
 	
+	//-----------------characters Updates---------------
+	player.Update(keyBoard);
+	//일단 이렇게 temp로 후려쳐 놨지만, 나중에 가서 총이 바뀌면 어떻게 달라질지 모른다. 그러니 윤성우 강의를 보고 다시 재 정립을 해보자
+	enemy->Update(player.getPlayerPos(),player.getPlayerBulletPointer(),player.getPlayerBulletNum());
 
+	//--------------------------------------------
+
+
+	//keyBoard reset
+	keyBoard = { 0, };
 }
 
 void GAMEMANAGER::Render(HDC hdc)
 {
+	//=====================Double Buffering =========================//
+	HDC memDC = this->getBackBuffer()->getMemDC();
+	//흰색 빈 비트맵
+	PatBlt(memDC, 0, 0, WINSIZEX, WINSIZEY, WHITENESS);
+	//=================================================================//
+	//painting enemy
+	enemy->Render(memDC);
+	
 	//Paint player
-	Rectangle(hdc, player.pos.left, player.pos.top, player.pos.right, player.pos.bottom);
+	tempRect = player.getPlayerPos();
+	Rectangle(memDC, tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
 
-	//paint Gun
-	MoveToEx(hdc, player.gunPoints.startX, player.gunPoints.startY, NULL);	//먼저 hdc를 옴기고 
-	LineTo(hdc, player.gunPoints.endX, player.gunPoints.endY);	//선을 그린다.
+	//paint Gun Handle 
+	MoveToEx(memDC, player.gunPoints.startX, player.gunPoints.startY, NULL);	//먼저 hdc를 옴기고 
+	LineTo(memDC, player.gunPoints.endX, player.gunPoints.endY);	//선을 그린다.
 
 	//paint bullet
 	for (int i = 0; i < BULLETMAX; i++)
@@ -98,9 +92,14 @@ void GAMEMANAGER::Render(HDC hdc)
 		if (!player.gun->checkFired(i))
 			continue;
 		tempRect = player.gun->getBulletPos(i);
-		Rectangle(hdc, tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
+		Rectangle(memDC, tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
 	}
-	
+
+
+	//=================================================================//
+	//백퍼에 내용을 HDC에 그리는 부분
+	this->getBackBuffer()->render(hdc, 0, 0);
+	//=================================================================//
 }
 
 
@@ -108,6 +107,8 @@ void GAMEMANAGER::Release()
 {
 	keyManager::getSingleton()->release();
 	delete(player.gun);
+	delete(enemy);
+	delete(m_backbuffer);
 }
 
 LRESULT GAMEMANAGER::GameProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
@@ -129,6 +130,11 @@ LRESULT GAMEMANAGER::GameProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lP
 		this->Render(hdc);
 		EndPaint(hWnd, &ps);
 		break;
+	//case WM_MOUSEMOVE:
+	//	mousePoint.x = LOWORD(lParam);
+	//	mousePoint.y = HIWORD(lParam);
+	//	printf("X: %d  Y: %d \n", mousePoint.x, mousePoint.y);
+	//	break;
 	case WM_KEYDOWN:	//이건 ESC 누르면 끝나도록만 쓸것이니 필요없으면 지우도록
 		switch (wParam)
 		{
@@ -149,46 +155,4 @@ LRESULT GAMEMANAGER::GameProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lP
 	return 0;
 }
 
-void GAMEMANAGER::playerJump()
-{
-	//printf("player.pos.bottom : %d\n", player.pos.bottom);
-	if (player.isJump)
-	{
-		player.Jump();
-		
-		//printf("player.pos.bottom : %d\n", player.pos.bottom);
-	}
-	else if(!IntersectRect(&tempRect,&player.pos,&GnO.getFloorPos()))
-	{
-		player.Gravity();
-	}
-		
-}
 
-void GAMEMANAGER::changeGunPos()
-{
-	player.gunPoints.startX = player.pos.left + (PLAYER_SIZE / 2);
-	player.gunPoints.startY = player.pos.top + (PLAYER_SIZE / 2);
-	
-
-	//gun의 end point가 angle에 따라 달라지게 만듬
-	if (player.gunPoints.isUpKeyPressed || player.gunPoints.isDownKeyPressed)
-	{
-		if (player.gunPoints.isUpKeyPressed)
-		{
-			player.gunPoints.angle = PI / 2;
-			player.gunPoints.isUpKeyPressed = false;
-		}
-		else 
-		{
-			player.gunPoints.angle = PI + (PI / 2)+0.01f;	//미세조정 0.01f
-			player.gunPoints.isDownKeyPressed = false;
-		}
-	}
-	else
-		player.gunPoints.angle = player.gunPoints.prevAngle;
-		
-		
-	player.gunPoints.endX = cosf(player.gunPoints.angle)*PLAYER_SIZE + player.gunPoints.startX;
-	player.gunPoints.endY = -(sinf(player.gunPoints.angle)*PLAYER_SIZE) + player.gunPoints.startY;
-}
