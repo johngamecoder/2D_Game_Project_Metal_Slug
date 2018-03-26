@@ -21,6 +21,7 @@ void GAMEMANAGER::Init()
 {
 	keyManager::getSingleton()->init();
 	keyBoard = { 0, };
+	
 	setBackBuffer();
 
 	mousePoint = { 0,0 };
@@ -78,11 +79,12 @@ void GAMEMANAGER::Render(HDC hdc)
 	//painting enemy
 	enemy->Render(memDC);
 	
-	//Paint player
-	tempRect = player.getPlayerPos();
-	Rectangle(memDC, tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
+	//painting Player;
+	player.Render(memDC);
+	//Rectangle(memDC, tempRect.left, tempRect.left, tempRect.right, tempRect.bottom);
 
 	//paint Gun Handle 
+	tempRect = player.getPlayerPos();
 	MoveToEx(memDC, player.gunPoints.startX, player.gunPoints.startY, NULL);	//먼저 hdc를 옴기고 
 	LineTo(memDC, player.gunPoints.endX, player.gunPoints.endY);	//선을 그린다.
 
@@ -106,7 +108,8 @@ void GAMEMANAGER::Render(HDC hdc)
 void GAMEMANAGER::Release()
 {
 	keyManager::getSingleton()->release();
-	delete(player.gun);
+	player.Release();
+
 	delete(enemy);
 	delete(m_backbuffer);
 }
