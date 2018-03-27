@@ -30,6 +30,16 @@ void SOLDIER::Init()
 
 	//총알이 화면 주변에서 나갈 경우 이걸로 reset 시켜줌
 	bulletBoarder = { 0,0,WINSIZEX ,WINSIZEY };
+
+	m_enemy_rifle = NULL;
+
+	m_rifle_idle = new Image;
+	m_rifle_idle->init("Image/enemy/rifle/idle/rifle_idle.bmp", 200, 100, 4, 2, true, RGB(255, 0, 255));
+	m_rifle_move = new Image;
+	m_rifle_move->init("Image/enemy/rifle/move/rifle_move.bmp", 700, 100, 14, 2, true, RGB(255, 0, 255));
+	m_rifle_shoot = new Image;
+	m_rifle_shoot->init("Image/enemy/rifle/shoot/rifle_shoot.bmp", 1000, 100, 20, 2, true, RGB(255, 0, 255));
+
 }
 void SOLDIER::Update(RECT _playerPos, tagBULLET* _bullet,int n)
 {
@@ -87,6 +97,7 @@ void SOLDIER::Update(RECT _playerPos, tagBULLET* _bullet,int n)
 void SOLDIER::Idle()
 {
 	//printf("Idle\n");
+	
 }
 void SOLDIER::Attack()
 {
@@ -120,6 +131,9 @@ void SOLDIER::Dead()
 }
 void SOLDIER::Render(HDC hdc)
 {
+	m_enemy_rifle = m_rifle_idle;
+	m_enemy_rifle->setFrameY(0);
+	m_enemy_rifle->setFrameX(0);
 	if (_E.isDead)	//죽었다면 더 이상 안움직이게 한다.
 		return;
 	//paint enemy & boundaries
@@ -134,6 +148,7 @@ void SOLDIER::Render(HDC hdc)
 	MoveToEx(hdc, EgunPoints.startX, EgunPoints.startY, NULL);	//먼저 hdc를 옴기고 
 	LineTo(hdc, EgunPoints.endX, EgunPoints.endY);	//선을 그린다.
 
+	m_enemy_rifle->render(hdc, tempRect.left, tempRect.top);
 	//paint enemy bullet
 	for (int i = 0; i < SOLDIER_BULLET_MAX; i++)
 	{
@@ -143,6 +158,13 @@ void SOLDIER::Render(HDC hdc)
 		Rectangle(hdc, tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
 	}
 
+}
+
+void SOLDIER::Release()
+{
+	delete m_rifle_idle;
+	delete m_rifle_move;
+	delete m_rifle_shoot;
 }
 
 

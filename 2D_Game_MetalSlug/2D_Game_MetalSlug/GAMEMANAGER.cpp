@@ -38,7 +38,7 @@ void GAMEMANAGER::Init()
 void GAMEMANAGER::Update()
 {
 	//전역으로 놓아둔 hWnd, extern을 사용하는것 매우 중요!
-	InvalidateRect(hWnd, 0, true);
+	InvalidateRect(hWnd, 0, false);
 	player.setFloorPos(GnO.getFloorPos());
 
 	//key입력을 받는 부분

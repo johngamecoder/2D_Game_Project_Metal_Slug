@@ -25,7 +25,8 @@ void PLAYER::Init()
 
 	//player jump 관련 세팅
 	isJump = false;
-	isIdle = false;
+	isfired = false;
+
 
 	//player 총에 관한 setting
 	gun = new DEFAULTGUN;
@@ -40,34 +41,27 @@ void PLAYER::Init()
 	//player 이미지
 	m_player_top = NULL;
 	m_player_bottom = NULL;
-	currentFrameX = 0;
 	currentFrameY = 0;
-
+	playerState = 0;
+	
+	//top
 	m_idle_top = new Image;
 	m_idle_top->init("Image/player/idle_top/idle_top.bmp", 400, 200, 4, 2, true, RGB(255, 0, 255));
 	m_shooting_top = new Image;
 	m_shooting_top->init("Image/player/shooting_top/shooting_top.bmp", 800, 200, 8, 2, true, RGB(255, 0, 255));
+	m_shootdown_top = new Image;
+	m_shootdown_top->init("Image/player/shootdown_top/shootdown_top.bmp", 600, 200, 6, 2, true, RGB(255, 0, 255));
+	m_shootup_top = new Image;
+	m_shootup_top->init("Image/player/shootup_top/shootup_top.bmp", 600, 200, 6, 2, true, RGB(255, 0, 255));
 	
+	//leg
+	m_idle_leg = new Image;
+	m_idle_leg->init("Image/player/idle_leg/idle_leg.bmp", 100, 200, 1, 2, true, RGB(255, 0, 255));
 	m_walk_leg = new Image;
 	m_walk_leg->init("Image/player/walk_leg/walk_leg.bmp", 1200, 200, 12, 2, true, RGB(255, 0, 255));
 	m_jump_leg = new Image;
-	m_jump_leg->init("Image/player/jump_leg/jump_leg.bmp", 1200, 200, 12, 2, true, RGB(255, 0, 255));
-	//m_player_idle.image_top = new Image;
-	//m_player_idle.image_bottom = new Image;
-	//m_player_idle.image_top->init("Image/player/idle_top/idle_top.bmp", pos.left, pos.top, 400, 200, 4, 2, true, RGB(255, 0, 255));
-	//m_player_idle.image_bottom->init("Image/player/jump_leg/jump_leg.bmp",pos.left, pos.top, 800, 200, 8, 2, true, RGB(255, 0, 255));
-	//m_player_idle.count = 0;
-	//m_player_idle.index = 0;
-	//m_player_shoot.image_top = new Image;
-	//m_player_shoot.image_bottom = NULL;
-	//m_player_shoot.image_top->init("Image/player/shootinig_top/shooting_top.bmp", pos.left, pos.top, 800, 200, 8, 2, true, RGB(255, 0, 255));
-	//a = m_player_shoot.image_top;
-	//m_player_shoot.count = 0;
-	//m_player_shoot.index = 0;
-	////m_player_jump.image = new Image;
-	////m_player_jump.image->init("Image/player/Jump/Player_Jump.bmp", pos.left, pos.top, 360, 100, 12, 2, true, RGB(255, 0, 255));
-	////m_player_jump.count = 0;
-	////m_player_jump.index = 0;
+	m_jump_leg->init("Image/player/jump_leg/jump_leg.bmp", 800, 200, 8, 2, true, RGB(255, 0, 255));
+
 
 }
 
@@ -89,10 +83,14 @@ void PLAYER::Update(tagKEYBOARD keyBoard)
 	if (keyBoard.Q_KeyPressed)
 	{
 		gun->BulletFire(gunPoints.endX, gunPoints.endY, gunPoints.angle);
+		isfired = true;
+		Top_currentFrameX = 0;
 	}
 	gun->BulletMove();
 
-	//총이 frame 밖으로 나가면 reset되도록
+
+
+	//총이 frame 밖으로 나가면 reset되도록	//이거 계속 5번 불린다! 확인해보고 고처라!
 	for (int i = 0; i < BULLETMAX; i++)
 	{
 		if (!IntersectRect(&tempRect, &bulletBoarder, &gun->getBulletPos(i)))
@@ -100,58 +98,131 @@ void PLAYER::Update(tagKEYBOARD keyBoard)
 	}
 
 
-	//m_player_idle.count++;
-	//if (m_player_idle.count % 4 == 0)
-	//{
-	//	m_player_idle.count = 0;
-	//	m_player_idle.index--;
-	//	if (m_player_idle.index < 0)
-	//	{
-	//		m_player_idle.index = 4;
-	//	}
-	//	m_player_idle.image_top->setFrameX(m_player_idle.index);
-	//	m_player_idle.image_bottom->setFrameX(m_player_idle.index);
-	//}
+	//state change
+	if (isfired)
+		playerState += T_SHOOTING;
 
-	//m_player_shoot.count++;
-	//if (m_player_shoot.count % 8 == 0)
-	//{
-	//	m_player_shoot.count = 0;
-	//	m_player_shoot.index--;
-	//	if (m_player_shoot.index < 0)
-	//	{
-	//		m_player_shoot.index = 8;
-	//	}
-	//	m_player_shoot.image_top->setFrameX(m_player_idle.index);
-	//}
-	
-	
+	//FrameX count + 타이머등으로 사용
+	count++;
+	if (count % 10 == 0)
+	{
+		frameTemp++;
+		if (count % 80 == 0)
+			isfired = false;
+	}
 
 }
 
-void PLAYER::runFrame()
-{
-
-}
 void PLAYER::Render(HDC hdc)
 {
+	switch (playerState)
+	{
+	case idle_idle:	//이거 나중에 맨 뒤로 할것임
+		m_player_top	= m_idle_top;
+		Top_currentFrameX = frameTemp % 4;	//이미지 X 프레임 만큼 나눈것이다.
+		m_player_bottom = m_idle_leg;
+		Bottom_currentFrameX = 0;
+		break;
+	case idle_walk:
+		m_player_top	= m_idle_top;
+		Top_currentFrameX = frameTemp % 4;
+		m_player_bottom = m_walk_leg;
+		Bottom_currentFrameX = frameTemp % 12;
+		break;
+	case idle_jump:
+		m_player_top	= m_idle_top;
+		Top_currentFrameX = frameTemp % 4;
+		m_player_bottom = m_jump_leg;
+		Bottom_currentFrameX = frameTemp % 8;
+		break;
 
-	//m_player_idle.image_bottom->frameRender(hdc, pos.left, pos.top + 92);
-	//m_player_idle.image_top->frameRender(hdc, pos.left, pos.top+6);
-	//m_player_shoot.image_top->frameRender(hdc, pos.left, pos.top);
-	///*if (isJump)
-	//	m_player_jump.image->frameRender(hdc, pos.left, pos.top);*/
+	case shooting_idle:
+		m_player_top	= m_shooting_top;
+		Top_currentFrameX = frameTemp % 8;
+		m_player_bottom = m_idle_leg;
+		Bottom_currentFrameX = 0;
+		break;
+	case shooting_walk:
+		m_player_top	= m_shooting_top;
+		Top_currentFrameX = frameTemp % 8;
+		m_player_bottom = m_walk_leg;
+		Bottom_currentFrameX = frameTemp % 12;
+		break;
+	case shooting_jump:
+		m_player_top		= m_shooting_top;
+		Top_currentFrameX = frameTemp % 8;
+		m_player_bottom = m_jump_leg;
+		Bottom_currentFrameX = frameTemp % 8;
+		break;
+
+	case shootdown_idle:							
+		m_player_top = m_shootdown_top;
+		Top_currentFrameX = frameTemp % 6;
+		m_player_bottom = m_idle_leg;
+		Bottom_currentFrameX = 0;
+		break;
+	case shootdown_walk:
+		m_player_top = m_shootdown_top;
+		Top_currentFrameX = frameTemp % 6;
+		m_player_bottom = m_walk_leg;
+		Bottom_currentFrameX = frameTemp % 12;
+		break;
+	case shootdown_jump:
+		m_player_top = m_shootdown_top;
+		Top_currentFrameX = frameTemp % 6;
+		m_player_bottom = m_jump_leg;
+		Bottom_currentFrameX = frameTemp % 8;
+		break;
+
+	case shootup_idle : 
+		m_player_top = m_shootup_top;
+		Top_currentFrameX = frameTemp % 6;
+		m_player_bottom = m_idle_leg;
+		Bottom_currentFrameX = 0;
+		break;
+	case shootup_walk : 
+		m_player_top = m_shootup_top;
+		Top_currentFrameX = frameTemp % 6;
+		m_player_bottom = m_walk_leg;
+		Bottom_currentFrameX = frameTemp % 12;
+		break;
+	case shootup_jump : 
+		m_player_top = m_shootup_top;
+		Top_currentFrameX = frameTemp % 6;
+		m_player_bottom = m_jump_leg;
+		Bottom_currentFrameX = frameTemp % 8;
+		break;
+	}
+	playerState = 0;	//idle_idle로 초기화
+
+
 	
-	//m_player_bottom->frameRender(hdc, pos.left, pos.top + 92);
-	//m_player_top->frameRender(hdc, pos.left, pos.top);
+
+	//꼭 출력되는 부분	//
+	Rectangle(hdc, pos.left, pos.top, pos.right, pos.bottom);
+
+	m_player_bottom->setFrameY(currentFrameY);
+	m_player_bottom->setFrameX(Bottom_currentFrameX);
+	m_player_bottom->frameRender(hdc, pos.left - 40, pos.top );
+
+	m_player_top->setFrameY(currentFrameY);
+	m_player_top->setFrameX(Top_currentFrameX);
+	m_player_top->frameRender(hdc, pos.left-40, pos.top-48);
 	
 }
 
 void PLAYER::Release()
 {
-	//delete m_player_idle.image_top;
-	//delete m_player_idle.image_bottom;
-	//delete m_player_shoot.image_top;
+	delete m_idle_top;
+	delete m_shooting_top;		
+	delete m_shootdown_top;
+	delete m_shootup_top;
+	
+
+	delete m_idle_leg;
+	delete m_walk_leg;
+	delete m_jump_leg;
+
 	delete gun;
 }
 
@@ -168,10 +239,9 @@ void PLAYER::Move(bool leftKeyPressed,bool rightKeyPressed,bool upKeyPressed,boo
 		gunPoints.prevAngle = PI;
 
 		////frame control
-		currentFrameX = 1;
-		//m_player_idle.image_top->setFrameY(1);
-		//m_player_idle.image_bottom->setFrameY(1);
-		//m_player_shoot.image_top->setFrameY(1);
+		currentFrameY = 1;
+		if(!isJump)
+			playerState += B_WALK;	//걷는 것이니	//점프가 아닐때
 	}
 	if (rightKeyPressed)
 	{
@@ -183,17 +253,18 @@ void PLAYER::Move(bool leftKeyPressed,bool rightKeyPressed,bool upKeyPressed,boo
 		
 		////frame control
 		currentFrameY = 0;
-		//m_player_idle.image_top->setFrameY(0);
-		//m_player_idle.image_bottom->setFrameY(0);
-		//m_player_shoot.image_top->setFrameY(0);
+		if (!isJump)
+			playerState += B_WALK; //걷는 것이니	//점프가 아닐때
 	}
 	if (upKeyPressed)
 	{
 		gunPoints.isUpKeyPressed = true;
+		playerState += T_SHOOTUP;
 	}
 	if (downKeyPressed)
 	{
 		gunPoints.isDownKeyPressed = true;
+		playerState += T_SHOOTDOWN;
 	}
 	
 }
@@ -203,6 +274,7 @@ void PLAYER::playerJump()
 	if (isJump)
 	{
 		Jump();
+		playerState += B_JUMP;
 	}
 	else if (!IntersectRect(&tempRect, &pos, &floorPos))
 	{

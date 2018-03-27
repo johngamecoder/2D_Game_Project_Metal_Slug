@@ -19,6 +19,15 @@ private:
 	tagBULLET Ebullet[SOLDIER_BULLET_MAX];
 	tagGunPoints EgunPoints;
 	int bulletTimer;
+
+private:
+	Image* m_enemy_rifle;
+
+	Image* m_rifle_idle;
+	Image* m_rifle_move;
+	Image* m_rifle_shoot;
+
+
 public:
 	SOLDIER();
 	~SOLDIER();
@@ -40,6 +49,7 @@ public:
 	virtual void Move();
 	virtual void Dead();
 	virtual void Render(HDC);
+	virtual void Release();
 
 	void changeGunPos();
 	void DetectorPositionUpdate(); 

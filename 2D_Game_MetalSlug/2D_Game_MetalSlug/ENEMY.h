@@ -14,6 +14,7 @@ protected:
 	POINT playerCenterDirection;
 
 	RECT bulletBoarder;
+
 public:
 	RECT tempRect;
 public:
@@ -33,13 +34,14 @@ public:
 	//	return shootingPlayerBoundary;
 	//}
 
-	virtual void Init();
-	virtual void Update(RECT, tagBULLET*,int);	//첫번째 것은 player position, 두번째 인자는 player의 bullet의 주소값 ,세번째 인자는 bullet의 갯수
-	virtual void Idle();
-	virtual void Attack();
-	virtual void Move();
-	virtual void Dead();
-	virtual void Render(HDC);
+	virtual void Init()=0;
+	virtual void Update(RECT, tagBULLET*,int)=0;	//첫번째 것은 player position, 두번째 인자는 player의 bullet의 주소값 ,세번째 인자는 bullet의 갯수
+	virtual void Idle()=0;
+	virtual void Attack()=0;
+	virtual void Move()=0;
+	virtual void Dead()=0;
+	virtual void Render(HDC)=0;
+	virtual void Release()=0;
 
 	
 
