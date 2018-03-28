@@ -66,7 +66,7 @@ public:
 	HRESULT init(const DWORD resID, int width, int height, bool isTrans = false, COLORREF transColor = RGB(255, 0, 255));
 	//이미지 파일 초기화
 	//HRESULT init(const char* fileName, int width, int height, bool isTrans = false, COLORREF transColor = RGB(255, 0, 255));
-	HRESULT init(const char * fileName, int width, int height, int loc, bool isTrans = false, COLORREF transColor = RGB(255, 0, 255));
+	HRESULT init(const char * fileName, int width, int height,  bool isTrans = false, COLORREF transColor = RGB(255, 0, 255));
 
 	//프레임 이미지 파일로 초기화
 	HRESULT init(const char* fileName, int width, int height, int frameX, int frameY, bool isTrans = false, COLORREF transColor = RGB(255, 0, 255));

@@ -12,6 +12,12 @@
 #define SOLDIER_BULLET_SPEED 3
 #define SOLDIER_BULLET_DELAY 20
 
+struct ENEMYSTATE
+{
+	bool isIdle;
+	bool isMove;
+	bool isShoot;
+};
 
 class SOLDIER : public ENEMY
 {
@@ -20,8 +26,14 @@ private:
 	tagGunPoints EgunPoints;
 	int bulletTimer;
 
+	ENEMYSTATE enemyState;
+
 private:
 	Image* m_enemy_rifle;
+	int currentFrameY;
+	int currentFrameX;
+	int frame_count;
+	int frameTemp;
 
 	Image* m_rifle_idle;
 	Image* m_rifle_move;

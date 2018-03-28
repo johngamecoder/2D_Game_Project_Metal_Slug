@@ -21,7 +21,7 @@ void PLAYER::Init()
 	pos.top = PLAYER_POSITION_Y;
 	pos.right = PLAYER_POSITION_X + PLAYER_SIZE;
 	pos.bottom = PLAYER_POSITION_Y + PLAYER_SIZE;
-	moveSpeed = PLAYER_MOVE_SPEED;
+
 
 	//player jump 관련 세팅
 	isJump = false;
@@ -65,10 +65,10 @@ void PLAYER::Init()
 
 }
 
-void PLAYER::Update(tagKEYBOARD keyBoard)
+void PLAYER::Update(tagKEYBOARD keyBoard,int vertical_line)
 {
 
-	Move(keyBoard.leftKeyPressed, keyBoard.rightKeyPressed, keyBoard.upKeyPressed, keyBoard.downKeyPressed);
+	Move(keyBoard.leftKeyPressed, keyBoard.rightKeyPressed, keyBoard.upKeyPressed, keyBoard.downKeyPressed,vertical_line);
 
 	//player Jump & gravity(falling) 부분
 	if (keyBoard.W_KeyPressed)
@@ -103,11 +103,11 @@ void PLAYER::Update(tagKEYBOARD keyBoard)
 		playerState += T_SHOOTING;
 
 	//FrameX count + 타이머등으로 사용
-	count++;
-	if (count % 10 == 0)
+	frame_count++;
+	if (frame_count % 10 == 0)
 	{
 		frameTemp++;
-		if (count % 80 == 0)
+		if (frame_count % 80 == 0)
 			isfired = false;
 	}
 
@@ -227,14 +227,13 @@ void PLAYER::Release()
 }
 
 
-void PLAYER::Move(bool leftKeyPressed,bool rightKeyPressed,bool upKeyPressed,bool downKeyPressed)
+void PLAYER::Move(bool leftKeyPressed,bool rightKeyPressed,bool upKeyPressed,bool downKeyPressed,int vertical_line)
 {
 	
 
 	if (leftKeyPressed)
 	{
-		pos.left -= moveSpeed;
-		pos.right -= moveSpeed;
+		
 		//이건 총이 anymachinegun 으로 바뀌면 다시 생각해야 할 부분
 		gunPoints.prevAngle = PI;
 
@@ -245,9 +244,8 @@ void PLAYER::Move(bool leftKeyPressed,bool rightKeyPressed,bool upKeyPressed,boo
 	}
 	if (rightKeyPressed)
 	{
-		pos.left += moveSpeed;
-		pos.right += moveSpeed;
 
+		
 		//이건 총이 anymachinegun 으로 바뀌면 다시 생각해야 할 부분
 		gunPoints.prevAngle = 0;
 		

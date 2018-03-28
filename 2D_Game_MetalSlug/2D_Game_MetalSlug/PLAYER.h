@@ -1,7 +1,6 @@
 #pragma once
 
 #define JUMPPOWER 3.5f
-#define PLAYER_MOVE_SPEED 3
 #define PLAYER_SIZE 20
 
 
@@ -45,12 +44,13 @@ enum PLAYERSTATE
 
 class PLAYER
 {
+public:
+	RECT pos;			//player 위치
 private:
 	RECT tempRect;		//잠시 사용할 UTILITY
 	RECT bulletBoarder;	//총이 이 RECT를 넘어가면 초기화하게 된다.
 	RECT floorPos;
-	RECT pos;			//player 위치
-	long moveSpeed;
+	
 	float jumpPower;
 
 private:
@@ -60,13 +60,12 @@ private:
 	Image* m_player_top;
 	Image* m_player_bottom;
 	int currentFrameY;
-	int usingFrameX;
 	int Top_currentFrameX=0;
 	int Bottom_currentFrameX=0;
 	int frameTemp = 0;
 
 	int playerState;
-	int count = 0;
+	int frame_count = 0;
 
 	Image* m_idle_top;
 	Image* m_shooting_top;
@@ -89,13 +88,13 @@ public:
 	~PLAYER();
 	
 	void Init();
-	void Update(tagKEYBOARD);
+	void Update(tagKEYBOARD,int);
 	void Render(HDC);
 	void Release();
 
 
 
-	void Move(bool,bool,bool,bool);
+	void Move(bool,bool,bool,bool,int);
 	void playerJump();
 
 	RECT getPlayerPos();

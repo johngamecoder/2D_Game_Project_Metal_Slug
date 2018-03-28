@@ -103,7 +103,7 @@ HRESULT Image::init(const DWORD resID, int width, int height, bool isTrans, COLO
 	return S_OK;
 }
 
-HRESULT Image::init(const char * fileName, int width, int height, int loc, bool isTrans, COLORREF transColor)
+HRESULT Image::init(const char * fileName, int width, int height,  bool isTrans, COLORREF transColor)
 {
 	//재초기화 방지용, 이미지정보에 값이 있다면 릴리즈
 	if (m_imageInfo != nullptr) release();
@@ -127,8 +127,6 @@ HRESULT Image::init(const char * fileName, int width, int height, int loc, bool 
 	m_imageInfo->width = width;
 	m_imageInfo->height = height;
 
-	//m_imageInfo->x= 0 + loc* width;
-	//m_imageInfo->y = 0;
 
 
 

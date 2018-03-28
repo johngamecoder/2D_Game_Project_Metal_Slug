@@ -10,7 +10,7 @@ void SOLDIER::Init()
 {
 	_E.isDead = false;
 	//temporary enemy position.
-	_E.Pos = {100,350,150,400 };
+	_E.Pos = {700,350,750,400 };
 	detectPlayerBoundary = _E.Pos;
 	shootingPlayerBoundary = _E.Pos;
 
@@ -31,10 +31,20 @@ void SOLDIER::Init()
 	//총알이 화면 주변에서 나갈 경우 이걸로 reset 시켜줌
 	bulletBoarder = { 0,0,WINSIZEX ,WINSIZEY };
 
+
+
+	//Enemy State
+	enemyState = { 0, };
+
+	//Image rendering
 	m_enemy_rifle = NULL;
+	currentFrameX = 0;
+	currentFrameY = 0;
+	frame_count = 0;
+	frameTemp = 0;
 
 	m_rifle_idle = new Image;
-	m_rifle_idle->init("Image/enemy/rifle/idle/rifle_idle.bmp", 200, 100, 4, 2, true, RGB(255, 0, 255));
+	m_rifle_idle->init("Image/enemy/rifle/idle/rifle_idle.bmp", 600, 100, 12, 2, true, RGB(255, 0, 255));
 	m_rifle_move = new Image;
 	m_rifle_move->init("Image/enemy/rifle/move/rifle_move.bmp", 700, 100, 14, 2, true, RGB(255, 0, 255));
 	m_rifle_shoot = new Image;
@@ -53,9 +63,6 @@ void SOLDIER::Update(RECT _playerPos, tagBULLET* _bullet,int n)
 		if (IntersectRect(&tempRect, &_bullet[i].pos, &_E.Pos))//player의 bullet 과 enemy Pos check
 			Dead();
 	}
-
-
-		
 
 	//계속적으로 player의 위치를 얻어서 class 내에서 사용하자
 	playerPos = _playerPos;	
@@ -93,14 +100,20 @@ void SOLDIER::Update(RECT _playerPos, tagBULLET* _bullet,int n)
 			setFired(i, false);
 	}
 
+	//FrameX count + 타이머등으로 사용
+	frame_count++;
+	if (frame_count % 6 == 0)
+	{
+		frameTemp++;
+	}
 }
 void SOLDIER::Idle()
 {
-	//printf("Idle\n");
-	
+	enemyState.isIdle = true;
 }
 void SOLDIER::Attack()
 {
+	enemyState.isShoot = true;
 	if (bulletTimer<0)
 	{
 		S_BulletFire(EgunPoints.endX, EgunPoints.endY, EgunPoints.angle);
@@ -110,6 +123,7 @@ void SOLDIER::Attack()
 }
 void SOLDIER::Move()
 {
+	enemyState.isMove = true;
 
 	if (playerCenterDirection.x- _E.Pos.left+(SOLDIER_SIZE/2) < 0)
 	{
@@ -131,24 +145,22 @@ void SOLDIER::Dead()
 }
 void SOLDIER::Render(HDC hdc)
 {
-	m_enemy_rifle = m_rifle_idle;
-	m_enemy_rifle->setFrameY(0);
-	m_enemy_rifle->setFrameX(0);
+
 	if (_E.isDead)	//죽었다면 더 이상 안움직이게 한다.
 		return;
-	//paint enemy & boundaries
-	tempRect = detectPlayerBoundary;
-	Rectangle(hdc, tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
-	tempRect = shootingPlayerBoundary;
-	Rectangle(hdc, tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
-	tempRect = _E.Pos;
-	Rectangle(hdc, tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
+	////paint enemy & boundaries
+	//tempRect = detectPlayerBoundary;
+	//Rectangle(hdc, tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
+	//tempRect = shootingPlayerBoundary;
+	//Rectangle(hdc, tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
+	//tempRect = _E.Pos;
+	//Rectangle(hdc, tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
 	
 	//paint Gun Handle 
 	MoveToEx(hdc, EgunPoints.startX, EgunPoints.startY, NULL);	//먼저 hdc를 옴기고 
 	LineTo(hdc, EgunPoints.endX, EgunPoints.endY);	//선을 그린다.
 
-	m_enemy_rifle->render(hdc, tempRect.left, tempRect.top);
+	
 	//paint enemy bullet
 	for (int i = 0; i < SOLDIER_BULLET_MAX; i++)
 	{
@@ -158,8 +170,31 @@ void SOLDIER::Render(HDC hdc)
 		Rectangle(hdc, tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
 	}
 
-}
 
+	//Enemy State에 따른 frame render
+	if (enemyState.isShoot)
+	{
+		m_enemy_rifle = m_rifle_shoot;
+		currentFrameX = frameTemp % 20;
+	}
+	else if (enemyState.isMove)
+	{
+		m_enemy_rifle = m_rifle_move;
+		currentFrameX = frameTemp % 14;
+	}
+	else 
+	{
+		m_enemy_rifle = m_rifle_idle;
+		currentFrameX = frameTemp % 12;
+	}
+	//여기에 스테이트 초기화 나중에 넣자 일단 저 아래 
+	
+
+	m_enemy_rifle->setFrameY(currentFrameY);
+	m_enemy_rifle->setFrameX(currentFrameX);
+	m_enemy_rifle->frameRender(hdc, _E.Pos.left, _E.Pos.top);
+	enemyState = { 0, };
+}
 void SOLDIER::Release()
 {
 	delete m_rifle_idle;
@@ -178,12 +213,14 @@ void SOLDIER::changeGunPos()
 	//pLayer의 위치에 따라서 총구의 방향이 달라진다.
 	if (playerCenterDirection.x - _E.Pos.left + (SOLDIER_SIZE / 2) < 0)
 	{
+		currentFrameY = 0;
 		EgunPoints.angle = PI;
 		EgunPoints.endX = -(SOLDIER_GUN_LENGTH) + EgunPoints.startX;
 		EgunPoints.endY = EgunPoints.startY;
 	}
 	else
 	{
+		currentFrameY = 1;
 		EgunPoints.angle = 0;
 		EgunPoints.endX = SOLDIER_GUN_LENGTH +EgunPoints.startX;
 		EgunPoints.endY = EgunPoints.startY;

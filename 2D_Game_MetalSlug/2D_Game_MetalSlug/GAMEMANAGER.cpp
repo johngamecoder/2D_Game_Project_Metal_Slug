@@ -33,19 +33,48 @@ void GAMEMANAGER::Init()
 	enemy = new SOLDIER;
 	enemy->Init();
 	
+	vertical_line = 300;
 }
 
 void GAMEMANAGER::Update()
 {
 	//전역으로 놓아둔 hWnd, extern을 사용하는것 매우 중요!
-	InvalidateRect(hWnd, 0, false);
+	InvalidateRect(hWnd, 0, false);	//이 뒤에 true false 에서 true는 모든 것을 바꾸는것, false는 바뀌는 것만 그려주는것
 	player.setFloorPos(GnO.getFloorPos());
-
+	player_Pos = player.getPlayerPos();
 	//key입력을 받는 부분
 	if (keyManager::getSingleton()->isStayKeyDown(VK_LEFT))
+	{
+		if (player.pos.left > 0)	//window 왼쪽 screen에 다으면 뒤로 돌아가도록
+		{
+			player.pos.left -= PLAYER_MOVE_SPEED;
+			player.pos.right -= PLAYER_MOVE_SPEED;
+		}
+		else
+		{
+			//background move
+			GnO.front_background_pos.x += PLAYER_MOVE_SPEED;
+			
+		}
+			
+			
 		keyBoard.leftKeyPressed = true;
+	}
 	if (keyManager::getSingleton()->isStayKeyDown(VK_RIGHT))
+	{
+		if (vertical_line - player.pos.left > 0)	//vertical line 기준으로 넘어가면 background 가 움직이도록
+		{
+			player.pos.left += PLAYER_MOVE_SPEED;
+			player.pos.right += PLAYER_MOVE_SPEED;
+		}
+		else
+		{
+			//background move
+			GnO.front_background_pos.x -= PLAYER_MOVE_SPEED;
+		}
+
 		keyBoard.rightKeyPressed = true;
+	}
 	if (keyManager::getSingleton()->isStayKeyDown(VK_UP))
 		keyBoard.upKeyPressed = true;
 	if (keyManager::getSingleton()->isStayKeyDown(VK_DOWN))
@@ -54,16 +83,16 @@ void GAMEMANAGER::Update()
 		keyBoard.W_KeyPressed = true;
 	if (keyManager::getSingleton()->isOnceKeyDown(0x51/*'Q for shoot'*/))
 		keyBoard.Q_KeyPressed = true;
-	
 	//0x45 /*'E for shoot'*/
-	
+
+
 	//-----------------characters Updates---------------
-	player.Update(keyBoard);
+	player.Update(keyBoard,vertical_line);
 	//일단 이렇게 temp로 후려쳐 놨지만, 나중에 가서 총이 바뀌면 어떻게 달라질지 모른다. 그러니 윤성우 강의를 보고 다시 재 정립을 해보자
-	enemy->Update(player.getPlayerPos(),player.getPlayerBulletPointer(),player.getPlayerBulletNum());
+	enemy->Update(player_Pos,player.getPlayerBulletPointer(),player.getPlayerBulletNum());
 
-	//--------------------------------------------
-
+	//------------------background Updates----------------
+	//GnO.Update(player_Pos.left,vertical_line);
 
 	//keyBoard reset
 	keyBoard = { 0, };
@@ -76,6 +105,8 @@ void GAMEMANAGER::Render(HDC hdc)
 	//흰색 빈 비트맵
 	PatBlt(memDC, 0, 0, WINSIZEX, WINSIZEY, WHITENESS);
 	//=================================================================//
+	
+	GnO.Render(memDC);
 	//painting enemy
 	enemy->Render(memDC);
 	
@@ -97,6 +128,8 @@ void GAMEMANAGER::Render(HDC hdc)
 		Rectangle(memDC, tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
 	}
 
+	MoveToEx(memDC, vertical_line, 0, NULL);
+	LineTo(memDC, vertical_line, 800);
 
 	//=================================================================//
 	//백퍼에 내용을 HDC에 그리는 부분
@@ -109,7 +142,8 @@ void GAMEMANAGER::Release()
 {
 	keyManager::getSingleton()->release();
 	player.Release();
-
+	enemy->Release();
+	GnO.Release();
 	delete(enemy);
 	delete(m_backbuffer);
 }
