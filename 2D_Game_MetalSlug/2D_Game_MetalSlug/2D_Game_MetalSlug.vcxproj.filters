@@ -90,6 +90,9 @@
     <ClInclude Include="BOSS.h">
       <Filter>FrameWork\Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="ENEMY_IMAGE_CONTAINER.h">
+      <Filter>FrameWork\Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="keyManager.cpp">
@@ -127,6 +130,9 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ENEMY_IMAGE_CONTAINER.cpp">
+      <Filter>FrameWork\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

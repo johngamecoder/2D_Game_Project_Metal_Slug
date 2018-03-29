@@ -8,6 +8,8 @@ SOLDIER::~SOLDIER()
 
 void SOLDIER::Init()
 {
+
+	isOff = false;
 	_E.isDead = false;
 	//temporary enemy position.
 	_E.Pos = {700,350,750,400 };
@@ -43,25 +45,39 @@ void SOLDIER::Init()
 	frame_count = 0;
 	frameTemp = 0;
 
-	m_rifle_idle = new Image;
-	m_rifle_idle->init("Image/enemy/rifle/idle/rifle_idle.bmp", 600, 100, 12, 2, true, RGB(255, 0, 255));
-	m_rifle_move = new Image;
-	m_rifle_move->init("Image/enemy/rifle/move/rifle_move.bmp", 700, 100, 14, 2, true, RGB(255, 0, 255));
-	m_rifle_shoot = new Image;
-	m_rifle_shoot->init("Image/enemy/rifle/shoot/rifle_shoot.bmp", 1000, 100, 20, 2, true, RGB(255, 0, 255));
+	//m_rifle_idle = new Image;
+	//m_rifle_idle->init("Image/enemy/rifle/idle/rifle_idle.bmp", 600, 100, 12, 2, true, RGB(255, 0, 255));
+	//m_rifle_move = new Image;
+	//m_rifle_move->init("Image/enemy/rifle/move/rifle_move.bmp", 700, 100, 14, 2, true, RGB(255, 0, 255));
+	//m_rifle_shoot = new Image;
+	//m_rifle_shoot->init("Image/enemy/rifle/shoot/rifle_shoot.bmp", 1000, 100, 20, 2, true, RGB(255, 0, 255));
+	//m_dead_norm = new Image;
+	//m_dead_norm->init("Image/enemy/dead/norm/dead_norm.bmp", 550, 100, 11, 2, true, RGB(255, 0, 255));
 
 }
 void SOLDIER::Update(RECT _playerPos, tagBULLET* _bullet,int n)
 {
-	if (_E.isDead)	//죽었다면 더 이상 안움직이게 한다.
+	if (_E.isDead) //죽었다면 더 이상 안움직이게 한다.
+	{
+		Dead();
 		return;
+	}	
+		
 	//Player에게 총에 맞았는지 확인하는 부분
 	for (int i = 0; i < n; i++)
 	{
 		if (!_bullet[i].isFired)
 			continue;
 		if (IntersectRect(&tempRect, &_bullet[i].pos, &_E.Pos))//player의 bullet 과 enemy Pos check
-			Dead();
+		{
+			_E.isDead = true;
+			_bullet[i].isFired = false;	//맞은 총알 없애주기
+			_bullet[i].pos = { 0, };	//맞은 총알 초기화해주기
+			deathPoint.x = _E.Pos.left;
+			deathPoint.y = _E.Pos.top;
+			_E.Pos = { 0, };
+			EgunPoints = { 0,0,0,0,0,0,false,false };
+		}
 	}
 
 	//계속적으로 player의 위치를 얻어서 class 내에서 사용하자
@@ -138,16 +154,26 @@ void SOLDIER::Move()
 }
 void SOLDIER::Dead()
 {
-	_E.isDead = true;
-	//초기화 해주는 세팅을 하긴 했는데.. 다시 손봐야 할듯
-	_E.Pos = { 0,0,0,0 };
-	EgunPoints = { 0,0,0,0,0,0,false,false };
+	if (death_frameCount > 11)
+		return;
+	if (frameTemp % 2 == 1)
+	{
+		//m_dead_norm->setFrameX(death_frameCount++);
+		_m_->dead_norm->setFrameX(death_frameCount++);
+	}
+	
 }
 void SOLDIER::Render(HDC hdc)
 {
 
 	if (_E.isDead)	//죽었다면 더 이상 안움직이게 한다.
+	{
+		if (death_frameCount > 11)
+			return;
+		//m_dead_norm->frameRender(hdc, deathPoint.x, deathPoint.y);
+		_m_->dead_norm->frameRender(hdc, deathPoint.x, deathPoint.y);
 		return;
+	}
 	////paint enemy & boundaries
 	//tempRect = detectPlayerBoundary;
 	//Rectangle(hdc, tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
@@ -174,17 +200,20 @@ void SOLDIER::Render(HDC hdc)
 	//Enemy State에 따른 frame render
 	if (enemyState.isShoot)
 	{
-		m_enemy_rifle = m_rifle_shoot;
+		/*m_enemy_rifle = m_rifle_shoot;*/
+		m_enemy_rifle = _m_->rifle_shoot;
 		currentFrameX = frameTemp % 20;
 	}
 	else if (enemyState.isMove)
 	{
-		m_enemy_rifle = m_rifle_move;
+		//m_enemy_rifle = m_rifle_move;
+		m_enemy_rifle = _m_->rifle_move;
 		currentFrameX = frameTemp % 14;
 	}
 	else 
 	{
-		m_enemy_rifle = m_rifle_idle;
+		/*m_enemy_rifle = m_rifle_idle;*/
+		m_enemy_rifle = _m_->rifle_idle;
 		currentFrameX = frameTemp % 12;
 	}
 	//여기에 스테이트 초기화 나중에 넣자 일단 저 아래 
@@ -197,9 +226,11 @@ void SOLDIER::Render(HDC hdc)
 }
 void SOLDIER::Release()
 {
-	delete m_rifle_idle;
-	delete m_rifle_move;
-	delete m_rifle_shoot;
+	//delete m_rifle_idle;
+	//delete m_rifle_move;
+	//delete m_rifle_shoot;
+	//
+	//delete m_dead_norm;
 }
 
 

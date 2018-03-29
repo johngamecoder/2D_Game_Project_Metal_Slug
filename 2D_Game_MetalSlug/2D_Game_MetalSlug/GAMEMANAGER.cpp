@@ -29,8 +29,9 @@ void GAMEMANAGER::Init()
 	player.Init();
 	GnO.Init();
 
-
+	EIC = new ENEMY_IMAGE_CONTAINER;
 	enemy = new SOLDIER;
+	enemy->_m_ = EIC;
 	enemy->Init();
 
 	boss.Init();
@@ -170,11 +171,12 @@ void GAMEMANAGER::Render(HDC hdc)
 void GAMEMANAGER::Release()
 {
 	keyManager::getSingleton()->release();
-	//player.Release();
-	//enemy->Release();
-	//GnO.Release();
+	player.Release();
+	enemy->Release();
+	GnO.Release();
 	boss.Release();
-	//delete(enemy);
+	delete EIC;
+	delete(enemy);
 	delete(m_backbuffer);
 }
 

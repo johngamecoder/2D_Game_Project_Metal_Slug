@@ -25,6 +25,9 @@ private:
 	tagBULLET Ebullet[SOLDIER_BULLET_MAX];
 	tagGunPoints EgunPoints;
 	int bulletTimer;
+	POINT deathPoint;
+	int death_frameCount;
+	
 
 	ENEMYSTATE enemyState;
 
@@ -35,9 +38,10 @@ private:
 	int frame_count;
 	int frameTemp;
 
-	Image* m_rifle_idle;
-	Image* m_rifle_move;
-	Image* m_rifle_shoot;
+	//Image* m_rifle_idle;
+	//Image* m_rifle_move;
+	//Image* m_rifle_shoot;
+	//Image* m_dead_norm;
 
 
 public:

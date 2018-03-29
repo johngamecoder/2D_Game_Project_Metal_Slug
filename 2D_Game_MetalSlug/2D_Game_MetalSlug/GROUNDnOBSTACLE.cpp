@@ -16,7 +16,7 @@ void GROUNDnOBSTACLE::Init()
 
 	front_background_pos={ 0,200};
 	m_front_background = new Image;
-	m_front_background->init("Image/background/front_background.bmp", 3110, 360, true, RGB(255, 0, 255));
+	m_front_background->init("Image/background/front_background.bmp", 1950, 360, true, RGB(255, 0, 255));
 
 	back_background_pos = { 0,200 };
 	m_back_background = new Image;
