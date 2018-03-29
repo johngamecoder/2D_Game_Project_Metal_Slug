@@ -32,15 +32,19 @@ void GAMEMANAGER::Init()
 
 	enemy = new SOLDIER;
 	enemy->Init();
+
+	boss.Init();
 	
 	vertical_line = 300;
+	boss_line = 1500;
 }
 
 void GAMEMANAGER::Update()
 {
 	//전역으로 놓아둔 hWnd, extern을 사용하는것 매우 중요!
 	InvalidateRect(hWnd, 0, false);	//이 뒤에 true false 에서 true는 모든 것을 바꾸는것, false는 바뀌는 것만 그려주는것
-	player.setFloorPos(GnO.getFloorPos());
+	
+	player.setFloorPos(GnO.floorPos);
 	player_Pos = player.getPlayerPos();
 	//key입력을 받는 부분
 	if (keyManager::getSingleton()->isStayKeyDown(VK_LEFT))
@@ -53,8 +57,15 @@ void GAMEMANAGER::Update()
 		else
 		{
 			//background move
-			GnO.front_background_pos.x += PLAYER_MOVE_SPEED;
-			
+			//GnO.front_background_pos.x += PLAYER_MOVE_SPEED;
+			//GnO.back_background_pos.x += PLAYER_MOVE_SPEED / 2;
+			//move enemy
+			//이제 enemy들이 많이 만들어 지면 여기에서 for 문 돌리면서 움직이도록 하자!
+			//if (!enemy->_E.isDead)
+			//{
+			//	enemy->_E.Pos.left += PLAYER_MOVE_SPEED;
+			//	enemy->_E.Pos.right += PLAYER_MOVE_SPEED;
+			//}
 		}
 			
 			
@@ -70,9 +81,21 @@ void GAMEMANAGER::Update()
 		else
 		{
 			//background move
-			GnO.front_background_pos.x -= PLAYER_MOVE_SPEED;
-		}
+			if (vertical_line < boss_line)
+			{
+				GnO.front_background_pos.x -= PLAYER_MOVE_SPEED;
+				GnO.back_background_pos.x -= PLAYER_MOVE_SPEED / 2;
+				boss_line -= PLAYER_MOVE_SPEED;
+			}
 
+			//move enemy
+			//나중에는enemy->_E.isDead 가 false 인 사람들만 움직이게 하자!
+			if (!enemy->_E.isDead)
+			{
+				enemy->_E.Pos.left -= PLAYER_MOVE_SPEED;
+				enemy->_E.Pos.right -= PLAYER_MOVE_SPEED;
+			}
+		}
 		keyBoard.rightKeyPressed = true;
 	}
 	if (keyManager::getSingleton()->isStayKeyDown(VK_UP))
@@ -87,9 +110,12 @@ void GAMEMANAGER::Update()
 
 
 	//-----------------characters Updates---------------
-	player.Update(keyBoard,vertical_line);
+	player.Update(keyBoard);
 	//일단 이렇게 temp로 후려쳐 놨지만, 나중에 가서 총이 바뀌면 어떻게 달라질지 모른다. 그러니 윤성우 강의를 보고 다시 재 정립을 해보자
 	enemy->Update(player_Pos,player.getPlayerBulletPointer(),player.getPlayerBulletNum());
+	
+	if(vertical_line>=boss_line)
+		boss.Update(player.pos,GnO.floorPos);
 
 	//------------------background Updates----------------
 	//GnO.Update(player_Pos.left,vertical_line);
@@ -106,9 +132,12 @@ void GAMEMANAGER::Render(HDC hdc)
 	PatBlt(memDC, 0, 0, WINSIZEX, WINSIZEY, WHITENESS);
 	//=================================================================//
 	
+	Rectangle(memDC, GnO.floorPos.left, GnO.floorPos.top, GnO.floorPos.right, GnO.floorPos.bottom);
 	GnO.Render(memDC);
 	//painting enemy
 	enemy->Render(memDC);
+	if (vertical_line >= boss_line)
+		boss.Render(memDC);
 	
 	//painting Player;
 	player.Render(memDC);
@@ -130,21 +159,22 @@ void GAMEMANAGER::Render(HDC hdc)
 
 	MoveToEx(memDC, vertical_line, 0, NULL);
 	LineTo(memDC, vertical_line, 800);
-
+	MoveToEx(memDC, boss_line, 0, NULL);
+	LineTo(memDC, boss_line, 800);
 	//=================================================================//
 	//백퍼에 내용을 HDC에 그리는 부분
 	this->getBackBuffer()->render(hdc, 0, 0);
 	//=================================================================//
 }
 
-
 void GAMEMANAGER::Release()
 {
 	keyManager::getSingleton()->release();
-	player.Release();
-	enemy->Release();
-	GnO.Release();
-	delete(enemy);
+	//player.Release();
+	//enemy->Release();
+	//GnO.Release();
+	boss.Release();
+	//delete(enemy);
 	delete(m_backbuffer);
 }
 
@@ -156,7 +186,6 @@ LRESULT GAMEMANAGER::GameProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lP
 	{
 	case WM_CREATE:
 		SetTimer(hWnd, TIMER_ID, 10, nullptr);	//0.01초에 한번
-
 		break;
 	case WM_TIMER:
 		this->Update();
@@ -191,5 +220,3 @@ LRESULT GAMEMANAGER::GameProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lP
 	}
 	return 0;
 }
-
-

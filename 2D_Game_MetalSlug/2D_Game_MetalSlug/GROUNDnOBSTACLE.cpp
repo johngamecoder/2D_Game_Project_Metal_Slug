@@ -20,7 +20,7 @@ void GROUNDnOBSTACLE::Init()
 
 	back_background_pos = { 0,200 };
 	m_back_background = new Image;
-	m_back_background->init("Image/background/back_background.bmp", 1000, 160);
+	m_back_background->init("Image/background/back_background.bmp", 1500, 160);
 }
 
 //void GROUNDnOBSTACLE::Update(long left,int vertical_line)

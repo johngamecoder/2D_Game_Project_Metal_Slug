@@ -48,6 +48,7 @@ void GUN::BulletMove()
 }
 
 bool GUN::checkFired(int n)
+
 {
 	return bullet[n].isFired;
 }

@@ -54,9 +54,6 @@ private:
 	float jumpPower;
 
 private:
-	//M_STRUCT m_player_idle;
-	//M_STRUCT m_player_shoot;
-	//M_STRUCT m_player_jump;
 	Image* m_player_top;
 	Image* m_player_bottom;
 	int currentFrameY;
@@ -88,13 +85,13 @@ public:
 	~PLAYER();
 	
 	void Init();
-	void Update(tagKEYBOARD,int);
+	void Update(tagKEYBOARD);
 	void Render(HDC);
 	void Release();
 
 
 
-	void Move(bool,bool,bool,bool,int);
+	void Move(bool,bool,bool,bool);
 	void playerJump();
 
 	RECT getPlayerPos();

@@ -65,16 +65,17 @@ void PLAYER::Init()
 
 }
 
-void PLAYER::Update(tagKEYBOARD keyBoard,int vertical_line)
+void PLAYER::Update(tagKEYBOARD keyBoard)
 {
 
-	Move(keyBoard.leftKeyPressed, keyBoard.rightKeyPressed, keyBoard.upKeyPressed, keyBoard.downKeyPressed,vertical_line);
+	Move(keyBoard.leftKeyPressed, keyBoard.rightKeyPressed, keyBoard.upKeyPressed, keyBoard.downKeyPressed);
 
 	//player Jump & gravity(falling) 부분
 	if (keyBoard.W_KeyPressed)
 	{
 		jumpPower = -(JUMPPOWER);
 		isJump = true;
+		frameTemp = 0;
 	}
 	playerJump();
 
@@ -84,7 +85,7 @@ void PLAYER::Update(tagKEYBOARD keyBoard,int vertical_line)
 	{
 		gun->BulletFire(gunPoints.endX, gunPoints.endY, gunPoints.angle);
 		isfired = true;
-		Top_currentFrameX = 0;
+		frameTemp = 0;
 	}
 	gun->BulletMove();
 
@@ -207,7 +208,7 @@ void PLAYER::Render(HDC hdc)
 
 	m_player_top->setFrameY(currentFrameY);
 	m_player_top->setFrameX(Top_currentFrameX);
-	m_player_top->frameRender(hdc, pos.left-40, pos.top-48);
+	m_player_top->frameRender(hdc, pos.left-40, pos.top-46);
 	
 }
 
@@ -227,7 +228,7 @@ void PLAYER::Release()
 }
 
 
-void PLAYER::Move(bool leftKeyPressed,bool rightKeyPressed,bool upKeyPressed,bool downKeyPressed,int vertical_line)
+void PLAYER::Move(bool leftKeyPressed,bool rightKeyPressed,bool upKeyPressed,bool downKeyPressed)
 {
 	
 
@@ -351,8 +352,8 @@ void PLAYER::Jump()		//- 2차 함수를 사용해서 위로 언덕 방식의 점프를 구현했다.
 
 void PLAYER::Gravity()
 {
-	pos.top += GRAVITY;
-	pos.bottom += GRAVITY;
+	pos.top += GRAVITYTEMP;
+	pos.bottom += GRAVITYTEMP;
 }
 
 void PLAYER::setFloorPos(RECT _floorPos)

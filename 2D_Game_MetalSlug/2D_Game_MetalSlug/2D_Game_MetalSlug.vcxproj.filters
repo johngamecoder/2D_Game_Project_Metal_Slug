@@ -87,11 +87,11 @@
     <ClInclude Include="Image.h">
       <Filter>FrameWork\Image</Filter>
     </ClInclude>
+    <ClInclude Include="BOSS.h">
+      <Filter>FrameWork\Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="keyManager.cpp">
       <Filter>FrameWork\KeyManager</Filter>
     </ClCompile>
@@ -121,6 +121,12 @@
     </ClCompile>
     <ClCompile Include="Image.cpp">
       <Filter>FrameWork\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="BOSS.cpp">
+      <Filter>FrameWork\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

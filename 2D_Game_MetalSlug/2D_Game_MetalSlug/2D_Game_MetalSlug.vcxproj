@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="2D_Game_MetalSlug.h" />
+    <ClInclude Include="BOSS.h" />
     <ClInclude Include="DEFAULTGUN.h" />
     <ClInclude Include="ENEMY.h" />
     <ClInclude Include="GAMEMANAGER.h" />
@@ -164,6 +165,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="2D_Game_MetalSlug.cpp" />
+    <ClCompile Include="BOSS.cpp" />
     <ClCompile Include="DEFAULTGUN.cpp" />
     <ClCompile Include="ENEMY.cpp" />
     <ClCompile Include="GAMEMANAGER.cpp" />
