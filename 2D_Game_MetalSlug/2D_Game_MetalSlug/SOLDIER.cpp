@@ -6,13 +6,13 @@ SOLDIER::~SOLDIER()
 {
 }
 
-void SOLDIER::Init()
+void SOLDIER::Init(int xPos)
 {
 
 	isOff = false;
 	_E.isDead = false;
 	//temporary enemy position.
-	_E.Pos = {700,350,750,400 };
+	_E.Pos = { xPos,350,xPos+50,400 };
 	detectPlayerBoundary = _E.Pos;
 	shootingPlayerBoundary = _E.Pos;
 
@@ -55,7 +55,7 @@ void SOLDIER::Init()
 	//m_dead_norm->init("Image/enemy/dead/norm/dead_norm.bmp", 550, 100, 11, 2, true, RGB(255, 0, 255));
 
 }
-void SOLDIER::Update(RECT _playerPos, tagBULLET* _bullet,int n)
+void SOLDIER::Update(RECT _playerPos, tagBULLET* _bullet, int n)
 {
 	if (_E.isDead) //죽었다면 더 이상 안움직이게 한다.
 	{
@@ -154,8 +154,12 @@ void SOLDIER::Move()
 }
 void SOLDIER::Dead()
 {
-	if (death_frameCount > 11)
+	if (death_frameCount > 12)
+	{
+		isOff = true;
 		return;
+	}
+		
 	if (frameTemp % 2 == 1)
 	{
 		//m_dead_norm->setFrameX(death_frameCount++);

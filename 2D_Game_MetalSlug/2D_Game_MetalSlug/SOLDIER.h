@@ -58,7 +58,7 @@ public:
 		Ebullet[n].pos = { 0,0,0,0 };	//위치를 초기화 해주어서, 나중에 다른 것들과 부닥처서 error 가 나는 것을 방지
 	}
 
-	virtual void Init();
+	virtual void Init(int xPos);
 	virtual void Update(RECT, tagBULLET*,int);
 	virtual void Idle();
 	virtual void Attack();

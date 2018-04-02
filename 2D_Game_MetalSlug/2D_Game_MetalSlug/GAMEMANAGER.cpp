@@ -29,10 +29,17 @@ void GAMEMANAGER::Init()
 	player.Init();
 	GnO.Init();
 
-	EIC = new ENEMY_IMAGE_CONTAINER;
-	enemy = new SOLDIER;
-	enemy->_m_ = EIC;
-	enemy->Init();
+	//EIC = new ENEMY_IMAGE_CONTAINER;
+	//for (int i = 0; i < ENEMY_INSTANCE_NUM; i++)
+	//{
+	//	enemy[i].ptr	= new SOLDIER;
+	//	enemy[i].ptr->_m_ = EIC;
+	//	enemy[i].isOff = false;
+	//	enemy[i].ptr->Init(700+(i*20));
+	//}
+	//enemy = new SOLDIER;
+	//enemy->_m_ = EIC;
+	//enemy->Init();
 
 	boss.Init();
 	
@@ -91,11 +98,23 @@ void GAMEMANAGER::Update()
 
 			//move enemy
 			//나중에는enemy->_E.isDead 가 false 인 사람들만 움직이게 하자!
-			if (!enemy->_E.isDead)
+			for (int i = 0; i < ENEMY_INSTANCE_NUM; i++)
 			{
-				enemy->_E.Pos.left -= PLAYER_MOVE_SPEED;
-				enemy->_E.Pos.right -= PLAYER_MOVE_SPEED;
+				if (!enemy[i].isOff)
+				{
+					if (!enemy[i].ptr->_E.isDead)
+					{
+						enemy[i].ptr->_E.Pos.left -= PLAYER_MOVE_SPEED;
+						enemy[i].ptr->_E.Pos.right -= PLAYER_MOVE_SPEED;
+					}
+				}
+				
 			}
+			//if (!enemy->_E.isDead)
+			//{
+			//	enemy->_E.Pos.left -= PLAYER_MOVE_SPEED;
+			//	enemy->_E.Pos.right -= PLAYER_MOVE_SPEED;
+			//}
 		}
 		keyBoard.rightKeyPressed = true;
 	}
@@ -112,12 +131,18 @@ void GAMEMANAGER::Update()
 
 	//-----------------characters Updates---------------
 	player.Update(keyBoard);
-	//일단 이렇게 temp로 후려쳐 놨지만, 나중에 가서 총이 바뀌면 어떻게 달라질지 모른다. 그러니 윤성우 강의를 보고 다시 재 정립을 해보자
-	enemy->Update(player_Pos,player.getPlayerBulletPointer(),player.getPlayerBulletNum());
+	////일단 이렇게 temp로 후려쳐 놨지만, 나중에 가서 총이 바뀌면 어떻게 달라질지 모른다. 그러니 윤성우 강의를 보고 다시 재 정립을 해보자
+	//for (int i = 0; i < ENEMY_INSTANCE_NUM; i++)
+	//{
+	//	if(!enemy[i].isOff)
+	//		enemy[i].ptr->Update(player_Pos, player.getPlayerBulletPointer(), player.getPlayerBulletNum());
+	//	enemy[i].isOff = enemy[i].ptr->isOff;
+	//}
 	
-	if(vertical_line>=boss_line)
-		boss.Update(player.pos,GnO.floorPos);
-
+	
+	//if(vertical_line>=boss_line)
+	//	boss.Update(player.pos,GnO.floorPos);
+	boss.Update(player.pos, GnO.floorPos, player.getPlayerBulletPointer(), player.getPlayerBulletNum());	//이거 말고 위에꺼임 (이줄 지우고 위에 두줄 풀어라)
 	//------------------background Updates----------------
 	//GnO.Update(player_Pos.left,vertical_line);
 
@@ -134,12 +159,18 @@ void GAMEMANAGER::Render(HDC hdc)
 	//=================================================================//
 	
 	Rectangle(memDC, GnO.floorPos.left, GnO.floorPos.top, GnO.floorPos.right, GnO.floorPos.bottom);
-	GnO.Render(memDC);
-	//painting enemy
-	enemy->Render(memDC);
-	if (vertical_line >= boss_line)
-		boss.Render(memDC);
+	//GnO.Render(memDC);
+	////painting enemy
+	//for (int i = 0; i < ENEMY_INSTANCE_NUM; i++)
+	//{
+	//	if(!enemy[i].isOff)
+	//		enemy[i].ptr->Render(memDC);
+	//}
 	
+	//if (vertical_line >= boss_line)
+	//	boss.Render(memDC);
+	boss.Render(memDC);	//이거 말고 위에꺼임
+
 	//painting Player;
 	player.Render(memDC);
 	//Rectangle(memDC, tempRect.left, tempRect.left, tempRect.right, tempRect.bottom);
@@ -172,11 +203,14 @@ void GAMEMANAGER::Release()
 {
 	keyManager::getSingleton()->release();
 	player.Release();
-	enemy->Release();
-	GnO.Release();
+	//for (int i = 0; i < ENEMY_INSTANCE_NUM; i++)
+	//{
+	//	enemy[i].ptr->Release();
+	//}
+	//
+	//GnO.Release();
 	boss.Release();
 	delete EIC;
-	delete(enemy);
 	delete(m_backbuffer);
 }
 

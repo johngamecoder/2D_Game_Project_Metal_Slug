@@ -38,7 +38,7 @@ public:
 	//	return shootingPlayerBoundary;
 	//}
 
-	virtual void Init()=0;
+	virtual void Init(int xPos)=0;
 	virtual void Update(RECT, tagBULLET*,int)=0;	//첫번째 것은 player position, 두번째 인자는 player의 bullet의 주소값 ,세번째 인자는 bullet의 갯수
 	virtual void Idle()=0;
 	virtual void Attack()=0;

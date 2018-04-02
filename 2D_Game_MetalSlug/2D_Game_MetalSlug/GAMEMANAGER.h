@@ -8,11 +8,12 @@ class ENEMY;
 class BOSS;
 
 #define PLAYER_MOVE_SPEED 2
-//struct ENEMYSTRUCTURE
-//{
-//	ENEMY* ptr;
-//	bool isOff;
-//};
+#define ENEMY_INSTANCE_NUM 5
+struct ENEMYSTRUCTURE
+{
+	ENEMY* ptr;
+	bool isOff;
+};
 
 class GAMEMANAGER
 {
@@ -22,8 +23,8 @@ private:
 	GROUNDnOBSTACLE GnO;
 	BOSS boss;
 	//Enemy
-	//ENEMYSTRUCTURE enemy[5];
-	ENEMY* enemy;
+	ENEMYSTRUCTURE enemy[ENEMY_INSTANCE_NUM];
+	//ENEMY* enemy;
 	ENEMY_IMAGE_CONTAINER* EIC;
 	RECT tempRect;		//intersectRect 를 사용하기 위해 만들어 놓은 various usage temporary Rect
 	
