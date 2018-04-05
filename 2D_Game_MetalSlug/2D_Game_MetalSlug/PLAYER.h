@@ -1,7 +1,7 @@
 #pragma once
 
 #define JUMPPOWER 3.5f
-#define PLAYER_SIZE 20
+#define PLAYER_SIZE 60
 
 
 class GUN;

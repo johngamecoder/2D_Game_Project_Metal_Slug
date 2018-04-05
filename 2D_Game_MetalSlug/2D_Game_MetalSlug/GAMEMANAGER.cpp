@@ -43,8 +43,8 @@ void GAMEMANAGER::Init()
 
 	boss.Init();
 	
-	vertical_line = 300;
-	boss_line = 1500;
+	vertical_line = 500;
+	boss_line = 500;
 }
 
 void GAMEMANAGER::Update()
@@ -81,7 +81,7 @@ void GAMEMANAGER::Update()
 	}
 	if (keyManager::getSingleton()->isStayKeyDown(VK_RIGHT))
 	{
-		if (vertical_line - player.pos.left > 0)	//vertical line 기준으로 넘어가면 background 가 움직이도록
+		if (vertical_line - player.pos.right > 0)	//vertical line 기준으로 넘어가면 background 가 움직이도록
 		{
 			player.pos.left += PLAYER_MOVE_SPEED;
 			player.pos.right += PLAYER_MOVE_SPEED;
@@ -96,20 +96,20 @@ void GAMEMANAGER::Update()
 				boss_line -= PLAYER_MOVE_SPEED;
 			}
 
-			//move enemy
-			//나중에는enemy->_E.isDead 가 false 인 사람들만 움직이게 하자!
-			for (int i = 0; i < ENEMY_INSTANCE_NUM; i++)
-			{
-				if (!enemy[i].isOff)
-				{
-					if (!enemy[i].ptr->_E.isDead)
-					{
-						enemy[i].ptr->_E.Pos.left -= PLAYER_MOVE_SPEED;
-						enemy[i].ptr->_E.Pos.right -= PLAYER_MOVE_SPEED;
-					}
-				}
-				
-			}
+			////move enemy
+			////나중에는enemy->_E.isDead 가 false 인 사람들만 움직이게 하자!
+			//for (int i = 0; i < ENEMY_INSTANCE_NUM; i++)
+			//{
+			//	if (!enemy[i].isOff)
+			//	{
+			//		if (!enemy[i].ptr->_E.isDead)
+			//		{
+			//			enemy[i].ptr->_E.Pos.left -= PLAYER_MOVE_SPEED;
+			//			enemy[i].ptr->_E.Pos.right -= PLAYER_MOVE_SPEED;
+			//		}
+			//	}
+			//	
+			//}
 			//if (!enemy->_E.isDead)
 			//{
 			//	enemy->_E.Pos.left -= PLAYER_MOVE_SPEED;
@@ -144,7 +144,6 @@ void GAMEMANAGER::Update()
 	//	boss.Update(player.pos,GnO.floorPos);
 	boss.Update(player.pos, GnO.floorPos, player.getPlayerBulletPointer(), player.getPlayerBulletNum());	//이거 말고 위에꺼임 (이줄 지우고 위에 두줄 풀어라)
 	//------------------background Updates----------------
-	//GnO.Update(player_Pos.left,vertical_line);
 
 	//keyBoard reset
 	keyBoard = { 0, };
@@ -158,8 +157,13 @@ void GAMEMANAGER::Render(HDC hdc)
 	PatBlt(memDC, 0, 0, WINSIZEX, WINSIZEY, WHITENESS);
 	//=================================================================//
 	
-	Rectangle(memDC, GnO.floorPos.left, GnO.floorPos.top, GnO.floorPos.right, GnO.floorPos.bottom);
-	//GnO.Render(memDC);
+	//if (vertical_line >= boss_line)
+	//	boss.Render(memDC);
+	boss.Render(memDC);	//이거 말고 위에꺼임
+
+						//floor rectangel
+	//Rectangle(memDC, GnO.floorPos.left, GnO.floorPos.top, GnO.floorPos.right, GnO.floorPos.bottom);
+	GnO.Render(memDC);
 	////painting enemy
 	//for (int i = 0; i < ENEMY_INSTANCE_NUM; i++)
 	//{
@@ -167,9 +171,7 @@ void GAMEMANAGER::Render(HDC hdc)
 	//		enemy[i].ptr->Render(memDC);
 	//}
 	
-	//if (vertical_line >= boss_line)
-	//	boss.Render(memDC);
-	boss.Render(memDC);	//이거 말고 위에꺼임
+
 
 	//painting Player;
 	player.Render(memDC);
@@ -208,7 +210,7 @@ void GAMEMANAGER::Release()
 	//	enemy[i].ptr->Release();
 	//}
 	//
-	//GnO.Release();
+	GnO.Release();
 	boss.Release();
 	delete EIC;
 	delete(m_backbuffer);

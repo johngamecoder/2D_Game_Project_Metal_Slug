@@ -7,7 +7,7 @@ class GROUNDnOBSTACLE;
 class ENEMY;
 class BOSS;
 
-#define PLAYER_MOVE_SPEED 2
+#define PLAYER_MOVE_SPEED 5
 #define ENEMY_INSTANCE_NUM 5
 struct ENEMYSTRUCTURE
 {

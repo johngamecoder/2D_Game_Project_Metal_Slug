@@ -46,21 +46,21 @@ void PLAYER::Init()
 	
 	//top
 	m_idle_top = new Image;
-	m_idle_top->init("Image/player/idle_top/idle_top.bmp", 400, 200, 4, 2, true, RGB(255, 0, 255));
+	m_idle_top->init("Image/player/idle_top/idle_top.bmp", 1200, 600, 4, 2, true, RGB(255, 0, 255));
 	m_shooting_top = new Image;
-	m_shooting_top->init("Image/player/shooting_top/shooting_top.bmp", 800, 200, 8, 2, true, RGB(255, 0, 255));
+	m_shooting_top->init("Image/player/shooting_top/shooting_top.bmp", 2400, 600, 8, 2, true, RGB(255, 0, 255));
 	m_shootdown_top = new Image;
-	m_shootdown_top->init("Image/player/shootdown_top/shootdown_top.bmp", 600, 200, 6, 2, true, RGB(255, 0, 255));
+	m_shootdown_top->init("Image/player/shootdown_top/shootdown_top.bmp", 1800, 600, 6, 2, true, RGB(255, 0, 255));
 	m_shootup_top = new Image;
-	m_shootup_top->init("Image/player/shootup_top/shootup_top.bmp", 600, 200, 6, 2, true, RGB(255, 0, 255));
+	m_shootup_top->init("Image/player/shootup_top/shootup_top.bmp", 1800, 600, 6, 2, true, RGB(255, 0, 255));
 	
 	//leg
 	m_idle_leg = new Image;
-	m_idle_leg->init("Image/player/idle_leg/idle_leg.bmp", 100, 200, 1, 2, true, RGB(255, 0, 255));
+	m_idle_leg->init("Image/player/idle_leg/idle_leg.bmp", 300, 600, 1, 2, true, RGB(255, 0, 255));
 	m_walk_leg = new Image;
-	m_walk_leg->init("Image/player/walk_leg/walk_leg.bmp", 1200, 200, 12, 2, true, RGB(255, 0, 255));
+	m_walk_leg->init("Image/player/walk_leg/walk_leg.bmp", 3600, 600, 12, 2, true, RGB(255, 0, 255));
 	m_jump_leg = new Image;
-	m_jump_leg->init("Image/player/jump_leg/jump_leg.bmp", 800, 200, 8, 2, true, RGB(255, 0, 255));
+	m_jump_leg->init("Image/player/jump_leg/jump_leg.bmp", 2400, 600, 8, 2, true, RGB(255, 0, 255));
 
 
 }
@@ -204,11 +204,11 @@ void PLAYER::Render(HDC hdc)
 
 	m_player_bottom->setFrameY(currentFrameY);
 	m_player_bottom->setFrameX(Bottom_currentFrameX);
-	m_player_bottom->frameRender(hdc, pos.left - 40, pos.top );
+	m_player_bottom->frameRender(hdc, pos.left - 120, pos.top );
 
 	m_player_top->setFrameY(currentFrameY);
 	m_player_top->setFrameX(Top_currentFrameX);
-	m_player_top->frameRender(hdc, pos.left-40, pos.top-46);
+	m_player_top->frameRender(hdc, pos.left-120, pos.top-138);
 	
 }
 

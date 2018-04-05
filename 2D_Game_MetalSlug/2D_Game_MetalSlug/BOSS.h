@@ -13,7 +13,8 @@
 #define	BARREL_MEDIUM_SHELL_SPEED 3
 #define	BARREL_MEDIUM_SHELL_GRAVITY 1
 
-#define BARREL_BIG_SIZE 50
+#define BARREL_BIG_WIDTH 300
+#define BARREL_BIG_HEIGHT 400
 #define	BARREL_BIG_SHELL_SIZE 30
 #define	BARREL_BIG_SHELL_SPEED 3
 
@@ -29,7 +30,7 @@ enum PHASE_STATE
 class BOSS
 {
 public:
-	RECT pos = { 600,200,650,250 };
+	RECT pos = { 500,50,550,100 };
 	RECT tempRect;
 private:
 	int totalHP;
