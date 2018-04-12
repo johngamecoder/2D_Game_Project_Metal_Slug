@@ -47,7 +47,7 @@ void BOSS::Init()
 	//big
 	barrel_big_HP = 1;//잠시 이걸로
 	barrel_big_shell = { false,{ 0, },BARREL_BIG_SHELL_SPEED, (float)PI * 3 / 4,0,false,0 };
-
+	barrel_big = { pos.left - 177, pos.top - 33 ,0,0 };
 	m_boss = NULL;
 	
 	//body part
@@ -83,7 +83,7 @@ void BOSS::Init()
 
 	//big
 	m_barrel_big = new Image;
-	m_barrel_big->init("Image/boss/barrel/big/barrel_big.bmp",1696 * 3,710 * 3, 16,5, true, RGB(255, 0, 255));
+	m_barrel_big->init("Image/boss/barrel/big/barrel_big_test.bmp",7632,3195, 16,5, true, RGB(255, 0, 255));
 	barrel_big_framecountX = 0;
 	barrel_big_framecountY=0;
 
@@ -250,10 +250,31 @@ void BOSS::Update(RECT _playerPos,RECT _floorPos, tagBULLET* _bullet,int n)
 		break;
 	case isPhase3:
 	{	
-		int dx = barrel_big.right - playerPos.right;
-		int dy = -(barrel_big.top - playerPos.bottom);
-		double rad = atan2(dx, dy);
-		rad=rad * 180 / PI;
+		barrel_big_framecountY = 1;
+		//barrel_big_framecountX = 15;
+		//if (frame_count % 50==49)
+		//	barrel_big_framecountX++;
+		if (barrel_big_framecountX > 8)
+			barrel_big_framecountX = 0;
+		if (0 <= playerPos.right&&playerPos.right < 100)
+			barrel_big_framecountX = 8;
+		if (100 <= playerPos.right&&playerPos.right < 200)
+			barrel_big_framecountX = 7;
+		if (200 <= playerPos.right&&playerPos.right < 300)
+			barrel_big_framecountX = 6;
+		if (300 <= playerPos.right&&playerPos.right < 400)
+			barrel_big_framecountX = 5;
+		if (400 <= playerPos.right&&playerPos.right < 500)
+			barrel_big_framecountX = 4;
+
+		
+
+
+
+		//int dx = barrel_big.right - playerPos.right;
+		//int dy = -(barrel_big.top - playerPos.bottom);
+		//double rad = atan2(dx, dy);
+		//rad=rad * 180 / PI;
 		//나중에 이거 바꿔!(포신앞으로)
 		//if (!barrel_big_shell.isFired)
 		//{
@@ -268,21 +289,20 @@ void BOSS::Update(RECT _playerPos,RECT _floorPos, tagBULLET* _bullet,int n)
 		//	big_shell_move();
 
 
-		// ----------------------포탄이 땅에 떨어졌는지 check----------------------
-		//big explosion
-		if (barrel_big_shell.isFired)
-		{
-			barrel_big_shell.isFired = !(IntersectRect(&tempRect, &barrel_big_shell.pos, &floorPos));
-			if(barrel_big_shell.isFired)
-			{
-				//barrel_big_shell.explodedPos을 저장하고 effect를 그 부분에 폭파 시키자
-			}
-		}
+		//// ----------------------포탄이 땅에 떨어졌는지 check----------------------
+		////big explosion
+		//if (barrel_big_shell.isFired)
+		//{
+		//	barrel_big_shell.isFired = !(IntersectRect(&tempRect, &barrel_big_shell.pos, &floorPos));
+		//	if(barrel_big_shell.isFired)
+		//	{
+		//		//barrel_big_shell.explodedPos을 저장하고 effect를 그 부분에 폭파 시키자
+		//	}
+		//}
 			
 	}
 		break;
 	}
-
 	//frame control
 	frame_count++;
 	if (frame_count % 3 == 0)
@@ -449,14 +469,15 @@ void BOSS::Render(HDC hdc)
 			{
 				m_barrel_big->setFrameX(barrel_big_framecountX++);
 			}
-			m_barrel_big->frameRender(hdc, pos.left - 59, pos.top - 11);
+			m_barrel_big->frameRender(hdc, barrel_big.left - 55, barrel_big.top - 210);
 		}
 		if (barrel_big_framecountX > 20)
 		{
 			phase = isPhase3;
 			barrel_big_framecountX = 0;
 			m_barrel_big->setFrameY(1);
-			barrel_big = { pos.left - 177 ,pos.top - 33,pos.left - 177 + BARREL_BIG_WIDTH,pos.top - 33 + BARREL_BIG_HEIGHT };
+			barrel_big.right = barrel_big.left + BARREL_BIG_WIDTH;
+			barrel_big.bottom = barrel_big.top + BARREL_BIG_HEIGHT; 
 		}
 	}
 		break;
@@ -476,9 +497,10 @@ void BOSS::Render(HDC hdc)
 		m_body_wheel->frameRender(hdc, pos.left, pos.top + 390);
 
 		//big barrel render
-		Rectangle(hdc, barrel_big.left, barrel_big.top, barrel_big.right, barrel_big.bottom);
+		//Rectangle(hdc, barrel_big.left, barrel_big.top, barrel_big.right, barrel_big.bottom);
 		m_barrel_big->setFrameX(barrel_big_framecountX);
-		m_barrel_big->frameRender(hdc, barrel_big.left, barrel_big.top);
+		m_barrel_big->setFrameY(barrel_big_framecountY);
+		m_barrel_big->frameRender(hdc, barrel_big.left-55, barrel_big.top-210);
 
 		//shell render
 		Rectangle(hdc, barrel_big_shell.pos.left, barrel_big_shell.pos.top, barrel_big_shell.pos.right, barrel_big_shell.pos.bottom);
